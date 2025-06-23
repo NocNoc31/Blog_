@@ -1,7 +1,7 @@
 export const socials = [
   {
   name: 'Facebook',
-  url: 'https://www.facebook.com/',
+  url: 'https://www.facebook.com/locc.pham.501',
   icon: 'mdi:facebook'
   },
   {
@@ -11,7 +11,7 @@ export const socials = [
   },
   {
     name: 'Instagram',
-    url: 'https://instagram.com',
+    url: 'https://www.instagram.com/locyummi.3112/',
     icon: 'mdi:instagram'
   }
 ]

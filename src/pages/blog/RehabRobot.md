@@ -3,6 +3,7 @@ layout: '../../layouts/Post.astro'
 title: Rehab Robot 2DOF
 description: Hệ thống robot 2 bậc sử dụng giao tiếp CAN bus hỗ trợ phục hồi chức năng.
 publishedAt: 2025-06-22
+image: /images/RehabRobot/3D.jpg
 category: HUST
 ---
 

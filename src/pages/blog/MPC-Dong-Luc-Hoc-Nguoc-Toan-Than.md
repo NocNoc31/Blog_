@@ -3,8 +3,12 @@ layout: '../../layouts/Post.astro'
 title: 'Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation'
 description: 'Giải thích kiểu Feynman bài báo arXiv 2511.19709 (ETH Zurich): một bộ MPC toàn thân mức mô-men, dựa trên động lực học ngược, chạy real-time 80 Hz trên Unitree B2 + Z1, không cần bộ điều khiển toàn thân cấp thấp, kéo được tải 10 kg.'
 publishedAt: 2026-10-10
+image: /images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig1_standing_pulling
+alt: Robot Unitree B2 gắn tay Z1 kéo tải 10 kg khi đứng
 category: HUST
 ---
+
+*Ảnh đại diện: Hình 1, Molnar et al., arXiv 2511.19709, CC BY 4.0*
 
 > **Bài báo:** *Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation*. Lukas Molnar, Jin Cheng, Gabriele Fadini, Dongho Kang, Fatemeh Zargarbashi, Stelian Coros (Computational Robotics Lab, ETH Zurich). arXiv 2511.19709, **phiên bản v1, 24/11/2025**, giấy phép **CC BY 4.0**. Các hình ghi "Nguồn: Hình N" được lấy nguyên từ bài báo theo giấy phép này; hình ghi "Minh họa" do tác giả blog tự vẽ.
 

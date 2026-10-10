@@ -5,12 +5,14 @@ import {formatDate} from '../utils/helpers'
 ---
 
 <a class="post-preview__link fade-in" href={post.url}>
-<article class="post-preview__article">
+<article class:list={['post-preview__article', { 'post-preview__article--no-image': !post.frontmatter.image }]}>
   <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
-  <picture>
-    <source srcset={`${post.frontmatter.image}.webp`} type="image/webp">
-    <img class="post-preview__img" src={`${post.frontmatter.image}.png`} alt={`Featured image for ${post.frontmatter.title}`} >
-  </picture>
+  {post.frontmatter.image && (
+    <picture>
+      <source srcset={`${post.frontmatter.image}.webp`} type="image/webp">
+      <img class="post-preview__img" src={`${post.frontmatter.image}.png`} alt={`Featured image for ${post.frontmatter.title}`} >
+    </picture>
+  )}
   <div class="post-preview__text">
     {post.frontmatter?.category && <p class="post-preview__category">{post.frontmatter.category}</p>}
     <h2>{post.frontmatter.title}</h2>
@@ -34,6 +36,9 @@ import {formatDate} from '../utils/helpers'
   display: grid;
   grid-template-columns: 1fr 1.5fr;
   align-items: center;
+}
+.post-preview__article--no-image {
+  grid-template-columns: 1fr;
 }
 .post-preview__text {
   transition: transform 0.2s ease-in-out;

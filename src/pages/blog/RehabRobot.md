@@ -74,7 +74,7 @@ Cụ thể:
 Quên mất nói với mấy anh em góc quay âm là ngược chiều kim đồng hồ và ngược lại. 
 
 <div style="display: flex; justify-content: center; align-items: center; margin: 24px 0;">
-  <video controls width="800">
+  <video controls preload="none" width="800">
     <source src="/images/RehabRobot/TestAngle.webm" type="video/webm">
     Trình duyệt của bạn không hỗ trợ video.
   </video>
@@ -91,7 +91,7 @@ Dễ hiểu là mình sẽ tìm đường dễ dàng nhất để đi từ nhà 
  
 
 <div style="display: flex; justify-content: center; align-items: center; margin: 24px 0;">
-  <video controls width="800">
+  <video controls preload="none" width="800">
     <source src="/images/RehabRobot/PlanningRehab.webm" type="video/webm">
     Trình duyệt của bạn không hỗ trợ video.
   </video>
@@ -113,7 +113,7 @@ Nguồn: Moveit2
 Ngoài ra còn nhiều lắm còn hardware, giao diện điều khiển thực và giao diện HMI mà bài này dài rồi nên hẹn anh em lần sau. Đây là demo bảnh đã thực hiện tại HUST phòng 719. 
 
 <div style="display: flex; justify-content: center; align-items: center; margin: 24px 0;">
-  <video controls width="800">
+  <video controls preload="none" width="800">
     <source src="/images/RehabRobot/Real.mp4" type="video/mp4">
     Trình duyệt của bạn không hỗ trợ video.
   </video>

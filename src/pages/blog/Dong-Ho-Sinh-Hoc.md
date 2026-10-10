@@ -2,6 +2,7 @@
 layout: '../../layouts/Post.astro'
 title: Đồng hồ sinh học - Đâu là thời điểm tốt nhất 
 image: /images/DongHoSinhHoc/int5-clock
+alt: Đồng hồ analog tròn viền bạc, mặt trắng với số La Mã đen, kim gần 10:10 và kim giây đỏ
 publishedAt: "2022-03-31"
 category: 'Life Styles'
 slug: Dong-Ho-Sinh-Hoc

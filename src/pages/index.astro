@@ -2,6 +2,7 @@
 import Layout from '../layouts/Page.astro'
 import Container from '../components/Container.astro';
 import BlogPostsList from '../components/BlogPostsList.astro';
+import {resolveHeroImage} from '../utils/public-image';
 
 // Astro.glob() was removed in Astro 6.
 // Source: https://docs.astro.build/en/guides/upgrade-to/v6/#removed-astroglob
@@ -9,9 +10,11 @@ const posts = Object.values(import.meta.glob('./blog/*.{md,mdx}', { eager: true 
 	(a, b) => new Date(b.frontmatter.publishedAt).valueOf() - new Date(a.frontmatter.publishedAt).valueOf()
 );
 
+const firstHero = resolveHeroImage(posts[0]?.frontmatter?.image);
 const seo = {
   title: 'My/ Your/ Our ... World',
   description: 'A simple blog include all world',
+  lcpImage: firstHero.webp || firstHero.src || undefined,
 }
 ---
 

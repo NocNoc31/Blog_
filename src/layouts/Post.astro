@@ -44,7 +44,7 @@ const seo = {
                 loading="eager"
                 fetchpriority="high"
                 src={withBase(hero.src)}
-                alt={frontmatter.alt}
+                alt={frontmatter.alt || frontmatter.title}
               />
             </picture>
           )
@@ -163,6 +163,7 @@ const seo = {
   .post-content__content :global(.katex-display) {
     display: block;
     max-width: 100%;
+    min-width: 0;
     overflow-x: auto;
     overflow-y: hidden;
   }

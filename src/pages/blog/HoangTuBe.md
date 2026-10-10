@@ -3,6 +3,7 @@ layout: '../../layouts/Post.astro'
 title: Hoàng Tử Bé - Chiếc Gương Soi Chiếu Tâm Hồn và Những Bài Học Vĩnh Cửu
 description: Khám phá hành trình triết học của Hoàng Tử Bé, từ sự cô đơn, trách nhiệm thuần hóa, đến sức mạnh trí tưởng tượng, qua lăng kính sâu sắc.
 image: /images/HoangTuBe/biasach
+alt: Bìa sách Hoàng Tử Bé của Antoine de Saint-Exupéry, cậu bé trên hành tinh nhỏ với bông hồng dưới chụp kính và ba ngọn núi lửa
 publishedAt: 2025-06-23
 category: Books
 ---

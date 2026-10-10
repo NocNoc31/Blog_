@@ -17,17 +17,17 @@ Học thao tác khéo léo (dexterous manipulation) từ video người rẻ hơ
 Nhóm tác giả chỉ ra hai thách thức gắn chặt với nhau: **trừu tượng hóa nhiệm vụ** (từ video cần giữ lại gì, bỏ đi gì) và **khám phá khó**. Dex-One2Many giải quyết cả hai bằng cách trích xuất **cấu trúc nhiệm vụ** thay vì chuyển động, rồi dùng cấu trúc đó để dẫn dắt RL trong mô phỏng.
 
 <figure>
-<video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/one2many_human.mp4"></video>
+<video controls preload="none" width="640" src="https://dex-one2many.github.io/static/videos/one2many_human.mp4"></video>
 <figcaption>Đầu vào duy nhất của phương pháp: một video người đặt búp bê vào bát. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
-<video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/one2many_config_1.mp4"></video>
+<video controls preload="none" width="640" src="https://dex-one2many.github.io/static/videos/one2many_config_1.mp4"></video>
 <figcaption>Robot thật (UR3 + tay Wuji 1) thực hiện cùng nhiệm vụ ở một cấu hình không có trong video người (cấu hình 1). Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
-<video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/one2many_config_3.mp4"></video>
+<video controls preload="none" width="640" src="https://dex-one2many.github.io/static/videos/one2many_config_3.mp4"></video>
 <figcaption>Một cấu hình khác không có trong video người (cấu hình 3). Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
@@ -90,9 +90,9 @@ Nguồn: Hình 4, arXiv 2610.12470
 
 Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đơn vị %):
 
-<div class="table-scroll">
+<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng cuộn ngang">
 <table class="post-table">
-<caption>Bảng 1. Mô phỏng (Nguồn: Hình 4, arXiv 2610.12470)</caption>
+<caption>Bảng 1a. Mô phỏng (Nguồn: Hình 4, arXiv 2610.12470)</caption>
 <thead>
 <tr>
 <th rowspan="2">Nhiệm vụ</th>
@@ -134,9 +134,9 @@ Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đ
 </table>
 </div>
 
-<div class="table-scroll">
+<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng cuộn ngang">
 <table class="post-table">
-<caption>Bảng 1. Thực tế (Nguồn: Hình 4, arXiv 2610.12470)</caption>
+<caption>Bảng 1b. Thực tế (Nguồn: Hình 4, arXiv 2610.12470)</caption>
 <thead>
 <tr>
 <th rowspan="2">Nhiệm vụ</th>
@@ -187,12 +187,12 @@ Trên cấu hình Seen, baseline đạt tỉ lệ cao ở nhiều nhiệm vụ, 
 Nguồn: Hình 5, arXiv 2610.12470
 
 <figure>
-<video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/real/can_1.mp4"></video>
+<video controls preload="none" width="640" src="https://dex-one2many.github.io/static/videos/real/can_1.mp4"></video>
 <figcaption>Robot thật, nhiệm vụ Can. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
-<video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/real/stamp_1.mp4"></video>
+<video controls preload="none" width="640" src="https://dex-one2many.github.io/static/videos/real/stamp_1.mp4"></video>
 <figcaption>Robot thật, nhiệm vụ Stamp. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
@@ -204,12 +204,12 @@ Nguồn: Hình 5, arXiv 2610.12470
 
 Vì scene graph không phụ thuộc vào bàn tay, cùng một đặc tả nhiệm vụ có thể dùng cho nhiều embodiment, chỉ cần thay URDF và tập grasp. Trong mô phỏng (500 episode mỗi nhiệm vụ), bốn tổ hợp đều đạt tỉ lệ thành công trung bình từ 94.6% đến 96.8%:
 
-<div class="table-scroll">
+<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng cuộn ngang">
 <table class="post-table">
 <caption>Bảng 2. Tỉ lệ thành công theo embodiment (Nguồn: Table 1, arXiv 2610.12470)</caption>
 <thead>
 <tr>
-<th></th>
+<th><span class="visually-hidden">Nhiệm vụ</span></th>
 <th>UR3 + Wuji 1</th>
 <th>UR5e + Sharpa</th>
 <th>UR5e + Wuji 2</th>
@@ -228,27 +228,27 @@ Vì scene graph không phụ thuộc vào bàn tay, cùng một đặc tả nhi�
 </div>
 
 <figure>
-<video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_human.mp4"></video>
+<video controls preload="none" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_human.mp4"></video>
 <figcaption>Video người cho nhiệm vụ Sweep, đầu vào duy nhất cho cả bốn bàn tay bên dưới. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
-<video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur3_wuji1_1.mp4"></video>
+<video controls preload="none" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur3_wuji1_1.mp4"></video>
 <figcaption>Mô phỏng, Sweep, UR3 + Wuji 1, một cấu hình unseen. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
-<video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_sharpa_1.mp4"></video>
+<video controls preload="none" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_sharpa_1.mp4"></video>
 <figcaption>Mô phỏng, Sweep, UR5e + Sharpa. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
-<video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_wuji2_1.mp4"></video>
+<video controls preload="none" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_wuji2_1.mp4"></video>
 <figcaption>Mô phỏng, Sweep, UR5e + Wuji 2. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
-<video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_allegro_1.mp4"></video>
+<video controls preload="none" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_allegro_1.mp4"></video>
 <figcaption>Mô phỏng, Sweep, UR5e + Allegro. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 

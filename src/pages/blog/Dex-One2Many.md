@@ -90,15 +90,94 @@ Nguồn: Hình 4, arXiv 2610.12470
 
 Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đơn vị %):
 
-| | Doll | Can | Stamp | Hammer | Sweep |
-|---|---|---|---|---|---|
-| Mô phỏng, Seen | 0 / 0 / 100 | 100 / 100 / 100 | 100 / 100 / 100 | 100 / 0 / 90 | 100 / 100 / 100 |
-| Mô phỏng, Unseen | 0 / 0 / 95 | 0 / 0 / 90 | 15 / 0 / 100 | 0 / 0 / 95 | 0 / 5 / 85 |
-| Thực tế, Seen | 0 / 60 / 100 | 20 / 90 / 90 | 20 / 90 / 80 | 40 / N/A / 70 | 100 / 70 / 80 |
-| Thực tế, Unseen | 0 / 0 / 80 | 0 / 15 / 75 | 10 / 0 / 85 | 5 / N/A / 60 | 5 / 0 / 75 |
+<div class="table-scroll">
+<table class="post-table">
+<caption>Bảng 1. Mô phỏng (Nguồn: Hình 4, arXiv 2610.12470)</caption>
+<thead>
+<tr>
+<th rowspan="2">Nhiệm vụ</th>
+<th colspan="3">Seen</th>
+<th colspan="3">Unseen</th>
+</tr>
+<tr>
+<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
+<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Doll</th>
+<td>0</td><td>0</td><td><b>100</b></td>
+<td>0</td><td>0</td><td><b>95</b></td>
+</tr>
+<tr>
+<th scope="row">Can</th>
+<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
+<td>0</td><td>0</td><td><b>90</b></td>
+</tr>
+<tr>
+<th scope="row">Stamp</th>
+<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
+<td>15</td><td>0</td><td><b>100</b></td>
+</tr>
+<tr>
+<th scope="row">Hammer</th>
+<td><b>100</b></td><td>0</td><td>90</td>
+<td>0</td><td>0</td><td><b>95</b></td>
+</tr>
+<tr>
+<th scope="row">Sweep</th>
+<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
+<td>0</td><td>5</td><td><b>85</b></td>
+</tr>
+</tbody>
+</table>
+</div>
 
-N/A: thí nghiệm không thực hiện được do hỏng phần cứng.
-Nguồn: Hình 4, arXiv 2610.12470
+<div class="table-scroll">
+<table class="post-table">
+<caption>Bảng 1. Thực tế (Nguồn: Hình 4, arXiv 2610.12470)</caption>
+<thead>
+<tr>
+<th rowspan="2">Nhiệm vụ</th>
+<th colspan="3">Seen</th>
+<th colspan="3">Unseen</th>
+</tr>
+<tr>
+<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
+<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Doll</th>
+<td>0</td><td>60</td><td><b>100</b></td>
+<td>0</td><td>0</td><td><b>80</b></td>
+</tr>
+<tr>
+<th scope="row">Can</th>
+<td>20</td><td><b>90</b></td><td><b>90</b></td>
+<td>0</td><td>15</td><td><b>75</b></td>
+</tr>
+<tr>
+<th scope="row">Stamp</th>
+<td>20</td><td><b>90</b></td><td>80</td>
+<td>10</td><td>0</td><td><b>85</b></td>
+</tr>
+<tr>
+<th scope="row">Hammer</th>
+<td>40</td><td>–</td><td><b>70</b></td>
+<td>5</td><td>–</td><td><b>60</b></td>
+</tr>
+<tr>
+<th scope="row">Sweep</th>
+<td><b>100</b></td><td>70</td><td>80</td>
+<td>5</td><td>0</td><td><b>75</b></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="post-table__note">–: thí nghiệm không thực hiện được do hỏng phần cứng.</p>
 
 Trên cấu hình Seen, baseline đạt tỉ lệ cao ở nhiều nhiệm vụ, cho thấy hướng dẫn ở mức chuyển động có thể tái tạo đúng cấu hình trong video. Khác biệt xuất hiện rõ ở cấu hình Unseen: baseline đạt **không quá 15%** cả trong mô phỏng lẫn thực tế, trong khi Dex-One2Many đạt **85–100%** trong mô phỏng và **60–85%** trên robot thật. Trung bình trên robot thật ở cấu hình Unseen, Dex-One2Many đạt **75%**, hơn baseline tốt nhì **71 điểm phần trăm**. Theo tóm tắt của bài báo, phương pháp vượt baseline **6.5%** ở cấu hình Seen và **71%** ở cấu hình Unseen.
 
@@ -125,16 +204,28 @@ Nguồn: Hình 5, arXiv 2610.12470
 
 Vì scene graph không phụ thuộc vào bàn tay, cùng một đặc tả nhiệm vụ có thể dùng cho nhiều embodiment, chỉ cần thay URDF và tập grasp. Trong mô phỏng (500 episode mỗi nhiệm vụ), bốn tổ hợp đều đạt tỉ lệ thành công trung bình từ 94.6% đến 96.8%:
 
-| | UR3 + Wuji 1 | UR5e + Sharpa | UR5e + Wuji 2 | UR5e + Allegro |
-|---|---|---|---|---|
-| Doll | 88.4 | 98.4 | 97.2 | 97.2 |
-| Can | 93.6 | 97.4 | 95.2 | 92.2 |
-| Stamp | 98.6 | 96.6 | 97.0 | 98.8 |
-| Hammer | 94.6 | 94.2 | 97.6 | 91.8 |
-| Sweep | 98.0 | 96.6 | 97.0 | 100.0 |
-| **Trung bình** | **94.6** | **96.6** | **96.8** | **96.0** |
-
-Nguồn: Table 1, arXiv 2610.12470
+<div class="table-scroll">
+<table class="post-table">
+<caption>Bảng 2. Tỉ lệ thành công theo embodiment (Nguồn: Table 1, arXiv 2610.12470)</caption>
+<thead>
+<tr>
+<th></th>
+<th>UR3 + Wuji 1</th>
+<th>UR5e + Sharpa</th>
+<th>UR5e + Wuji 2</th>
+<th>UR5e + Allegro</th>
+</tr>
+</thead>
+<tbody>
+<tr><th scope="row">Doll</th><td>88.4</td><td>98.4</td><td>97.2</td><td>97.2</td></tr>
+<tr><th scope="row">Can</th><td>93.6</td><td>97.4</td><td>95.2</td><td>92.2</td></tr>
+<tr><th scope="row">Stamp</th><td>98.6</td><td>96.6</td><td>97.0</td><td>98.8</td></tr>
+<tr><th scope="row">Hammer</th><td>94.6</td><td>94.2</td><td>97.6</td><td>91.8</td></tr>
+<tr><th scope="row">Sweep</th><td>98.0</td><td>96.6</td><td>97.0</td><td>100.0</td></tr>
+<tr class="is-mean"><th scope="row">Trung bình</th><td>94.6</td><td>96.6</td><td>96.8</td><td>96.0</td></tr>
+</tbody>
+</table>
+</div>
 
 <figure>
 <video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_human.mp4"></video>

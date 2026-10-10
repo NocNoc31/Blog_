@@ -180,6 +180,171 @@ pre copy-code-button {
   right: 0.5rem;
 }
 
+/* Grid items default to min-width:auto, so a wide table stretches the page. */
+main.flow {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.post-content__content {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.post-content__content video {
+  display: block;
+  width: 100%;
+  max-width: min(720px, 100%);
+  height: auto;
+  min-width: 0;
+  margin: 2rem auto;
+}
+
+.post-content__content figure:has(> video) {
+  width: min(720px, 100%);
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.post-content__content figure:has(> video) > video {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.post-content__content figure:has(> video) > figcaption,
+.post-content__content video + p,
+.post-content__content video + figcaption,
+.post-content__content figure:has(> video) + p,
+.post-content__content div:has(> video) + span {
+  max-width: min(720px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.post-content__content table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  border-top: 1px solid color-mix(in srgb, var(--theme-on-background) 45%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-on-background) 45%, transparent);
+  font-variant-numeric: tabular-nums;
+  caption-side: top;
+}
+
+.post-content__content table.post-table {
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
+  font-size: 0.88em;
+}
+
+.post-content__content caption {
+  caption-side: top;
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  font-size: 0.9em;
+  margin-bottom: 0.5em;
+}
+
+.table-scroll {
+  container-type: inline-size;
+}
+
+.table-scroll caption {
+  position: sticky;
+  left: 0;
+  width: 100cqi;
+  max-width: 100cqi;
+  box-sizing: border-box;
+}
+
+.post-content__content th,
+.post-content__content td {
+  border: 0;
+  padding: 0.4rem 0.7rem;
+  text-align: center;
+  white-space: normal;
+}
+
+.post-table th,
+.post-table td {
+  white-space: nowrap;
+  padding: 0.3rem 0.4rem;
+}
+
+.post-table thead th:not([colspan]):not([rowspan]) {
+  white-space: normal;
+}
+
+.post-content__content thead th {
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-on-background) 45%, transparent);
+  font-weight: 600;
+}
+
+.post-content__content tbody th:first-child,
+.post-content__content tbody td:first-child {
+  text-align: left;
+  font-weight: 600;
+}
+
+.post-content__content tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--theme-on-background) 5%, transparent);
+}
+
+.table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table-scroll tbody th:first-child,
+.table-scroll tbody td:first-child,
+.table-scroll thead tr:first-child > th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--theme-background);
+}
+
+.table-scroll tbody tr:nth-child(even) > :first-child {
+  background: color-mix(in srgb, var(--theme-on-background) 5%, var(--theme-background));
+}
+
+.post-table thead tr:first-child th[colspan] {
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-on-background) 28%, transparent);
+}
+
+.post-content__content tbody tr.is-mean {
+  font-weight: 700;
+  background: color-mix(in srgb, var(--theme-on-background) 10%, transparent);
+}
+
+.table-scroll tbody tr.is-mean > :first-child {
+  background: color-mix(in srgb, var(--theme-on-background) 10%, var(--theme-background));
+}
+
+.post-table__note {
+  font-size: 0.9em;
+  font-style: italic;
+  color: #666;
+  margin-top: 0.4em;
+}
+
+@media (min-width: 800px) {
+  .post-content__content table.post-table {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+  }
+
+  .post-table thead th:not([colspan]):not([rowspan]) {
+    overflow-wrap: anywhere;
+  }
+}
+
 /* Gloal fade in animation */
 
 @media (prefers-reduced-motion: no-preference) {

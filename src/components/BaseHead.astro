@@ -1,5 +1,6 @@
 ---
 import {settings} from "../data/settings";
+import {withBase} from "../utils/helpers";
 
 import '../styles/reset.css';
 import '../styles/main.css';
@@ -13,14 +14,14 @@ export interface Props {
 
 const title = Astro.props.title || settings.title;
 const description = Astro.props.description || settings.description;
-const canonicalURL = Astro.props.canonicalURL || new URL(Astro.url.pathname, Astro.site);
-const image = new URL(Astro.props.image || './social.png', Astro.site);
+const canonicalURL = Astro.props.canonicalURL || new URL(withBase(Astro.url.pathname), settings.site);
+const image = new URL(withBase(Astro.props.image || '/social.png'), settings.site);
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Favicon -->
-<link rel="icon" type="image/svg" href="/favicon.svg" />
+<link rel="icon" type="image/svg" href={withBase('/favicon.svg')} />
 <!-- Primary Meta Tags -->
 <title>{title || settings.title}</title>
 <meta name="title" content={title || settings.title} />
@@ -28,9 +29,9 @@ const image = new URL(Astro.props.image || './social.png', Astro.site);
 <meta name="description" content={description || settings.description} />
 <meta name="generator" content={Astro.generator} />
 <!-- settingsmap -->
-<link rel="sitemap" href="/sitemap.xml">
+<link rel="sitemap" href={withBase('/sitemap-index.xml')}>
 <!-- RSS -->
-<link rel="alternate" type="application/rss+xml" title={`${settings.name} Blog`} href={`${settings.url}/feed/blog.xml`}/>
+<link rel="alternate" type="application/rss+xml" title={`${settings.name} Blog`} href={new URL('feed/blog.xml', new URL(withBase('/'), settings.site))}/>
 <!-- Canonical -->
 <link rel="canonical" href={canonicalURL}>
 

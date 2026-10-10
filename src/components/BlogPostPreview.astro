@@ -1,6 +1,6 @@
 ---
 const {post} = Astro.props;
-import {formatDate} from '../utils/helpers'
+import {formatDate, withBase} from '../utils/helpers'
 
 ---
 
@@ -9,8 +9,8 @@ import {formatDate} from '../utils/helpers'
   <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
   {post.frontmatter.image && (
     <picture>
-      <source srcset={`${post.frontmatter.image}.webp`} type="image/webp">
-      <img class="post-preview__img" src={`${post.frontmatter.image}.png`} alt={`Featured image for ${post.frontmatter.title}`} >
+      <source srcset={`${withBase(post.frontmatter.image)}.webp`} type="image/webp">
+      <img class="post-preview__img" src={`${withBase(post.frontmatter.image)}.png`} alt={`Featured image for ${post.frontmatter.title}`} >
     </picture>
   )}
   <div class="post-preview__text">

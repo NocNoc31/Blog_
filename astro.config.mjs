@@ -4,13 +4,15 @@ import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkBasePath from './src/utils/remark-base-path.mjs';
 
-const remarkPlugins = [remarkMath];
+const remarkPlugins = [remarkMath, [remarkBasePath, settings.base]];
 const rehypePlugins = [rehypeKatex];
 
 // https://astro.build/config
 export default defineConfig({
   site: settings.site,
+  base: settings.base,
   markdown: {
     // Keep remark-gfm (tables) and remark-smartypants when custom plugins are set.
     extendDefaultPlugins: true,

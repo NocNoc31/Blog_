@@ -2,6 +2,7 @@
 import Container from './Container.astro';
 import Logo from './Logo.astro';
 import SocialList from './SocialList.astro';
+import { withBase } from '../utils/helpers';
 ---
 
 <script>
@@ -11,7 +12,7 @@ import SocialList from './SocialList.astro';
 <header>
   <Container>
     <nav>
-      <a class="header__logo" href="/" title="Navigate Home">
+      <a class="header__logo" href={withBase('/')} title="Navigate Home">
         <Logo />
       </a>
       <SocialList />

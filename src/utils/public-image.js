@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { readImageSize } from './image-size.mjs';
 
 const rasterExtensions = ['.png', '.jpg', '.jpeg'];
 
@@ -39,10 +40,16 @@ export function resolveHeroImage(image) {
   }
 
   const webp = existsPublic(stemRelative + '.webp') ? `${stem}.webp` : null;
+  const sizedRelative = webp ? `${stemRelative}.webp` : raster ? raster.replace(/^\//, '') : null;
+  const size = sizedRelative && existsPublic(sizedRelative)
+    ? readImageSize(path.join(publicDir(), sizedRelative))
+    : null;
 
   return {
     src: raster ? raster + suffix : null,
     webp: webp ? webp + suffix : null,
+    width: size?.width ?? null,
+    height: size?.height ?? null,
   };
 }
 

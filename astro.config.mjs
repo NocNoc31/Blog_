@@ -6,6 +6,7 @@ import icon from 'astro-icon';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkBasePath from './src/utils/remark-base-path.mjs';
+import rehypeContentImages from './src/utils/rehype-content-images.mjs';
 // Astro 7 renders Markdown with Sätteri unless a processor is set. Keep unified
 // so remark-math, rehype-katex, and remark-base-path still run.
 // Source: https://docs.astro.build/en/guides/upgrade-to/v7/#new-default-markdown-processor-sätteri
@@ -13,7 +14,7 @@ import remarkBasePath from './src/utils/remark-base-path.mjs';
 import { unified } from '@astrojs/markdown-remark';
 
 const remarkPlugins = [remarkMath, [remarkBasePath, settings.base]];
-const rehypePlugins = [rehypeKatex];
+const rehypePlugins = [rehypeKatex, [rehypeContentImages, settings.base]];
 
 // https://astro.build/config
 export default defineConfig({

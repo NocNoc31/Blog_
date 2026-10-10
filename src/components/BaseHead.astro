@@ -1,7 +1,7 @@
 ---
 import {settings} from "../data/settings";
 import {withBase} from "../utils/helpers";
-import {resolveOgImagePath} from "../utils/public-image";
+import {resolveHeroImage, resolveOgImagePath} from "../utils/public-image";
 
 import '../styles/reset.css';
 import '../styles/main.css';
@@ -18,10 +18,13 @@ const description = Astro.props.description || settings.description;
 const canonicalURL = Astro.props.canonicalURL || new URL(withBase(Astro.url.pathname), settings.site);
 
 const image = new URL(withBase(resolveOgImagePath(Astro.props.image)), settings.site);
+const hero = resolveHeroImage(Astro.props.image);
+const lcpImage = Astro.props.image ? hero.webp || hero.src : null;
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+{lcpImage && <link rel="preload" as="image" href={withBase(lcpImage)} fetchpriority="high" />}
 <!-- Favicon -->
 <link rel="icon" type="image/svg" href={withBase('/favicon.svg')} />
 <!-- Primary Meta Tags -->

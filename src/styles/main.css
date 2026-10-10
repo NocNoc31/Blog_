@@ -113,6 +113,11 @@ body {
   grid-template-rows: auto 1fr auto;
 }
 
+/* Grid items use min-width: auto, so one wide child stretches the page. */
+body > * {
+  min-width: 0;
+}
+
 .flow > * + * {
   margin-top: var(--flow-space, 1em);
 }

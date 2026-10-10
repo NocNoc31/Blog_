@@ -4,6 +4,7 @@ title: Rehab Robot 2DOF
 description: Hệ thống robot 2 bậc sử dụng giao tiếp CAN bus hỗ trợ phục hồi chức năng.
 publishedAt: 2025-06-22
 image: /images/RehabRobot/3D
+alt: Mô hình 3D robot phục hồi chức năng hai bậc tự do, với khớp vai và khớp khuỷu
 category: HUST
 ---
 
@@ -27,7 +28,7 @@ Lấy cảm hứng từ chuyển động tự nhiên của cánh tay người, q
 Mục tiêu là xây dựng một cái nhìn tổng quan về hệ thống robot và các thành phần cấu thành.
 
 Từ những bước cơ bản, mô hình 3D được thiết kế bằng phần mềm SOLIDWORKS để phục vụ cho các giai đoạn tiếp theo.
-![Mô hình 3D](/images/RehabRobot/3D.jpg)
+![Bản vẽ 3D robot phục hồi chức năng hai bậc tự do sau khi thiết kế trong SOLIDWORKS](/images/RehabRobot/3D.jpg)
 <span style="font-size: 15px; font-style: italic; text-align: center; display: block;">
 Mô hình 3D sau khi thiết kế
 </span>
@@ -45,7 +46,7 @@ Các bước chi tiết để thực hiện điều này khá dài nên mình s�
 
 
 Sau khi mô phỏng được thì có kết quả như sau:
-![Mô hình 3D](/images/RehabRobot/simulation.jpg)
+![Mô phỏng chuyển động của robot trong RViz2 và Gazebo](/images/RehabRobot/simulation.jpg)
 <span style="font-size: 15px; font-style: italic; text-align: center; display: block;">
 Mô phỏng sử dụng Rviz2 
 </span>
@@ -103,7 +104,7 @@ Dễ hiểu là mình sẽ tìm đường dễ dàng nhất để đi từ nhà 
 ## Nhận thức môi trường 
 Tiếp theo đến phần nhận thức môi trường bảnh đang mong muốn sử dụng depth camera d435i tức camera có thể đo được chiều sâu theo môi trường 3D thay vì 2D như camera ta hay selfy.
 
-![Mô hình 3D](/images/RehabRobot/octomap.png)
+![Bản đồ môi trường 3D OctoMap dựng từ camera đo độ sâu](/images/RehabRobot/octomap.png)
 <span style="font-size: 15px; font-style: italic; text-align: center; display: block;">
 Môi trường 3D sử dụng OCTOMAP.
 Nguồn: Moveit2 

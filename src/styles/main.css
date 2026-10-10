@@ -300,6 +300,16 @@ main.flow {
   overflow-x: auto;
 }
 
+/* Markdown tables keep their content width and scroll in the wrapper.
+   .post-table sizing stays on the table itself. */
+@media (max-width: 799px) {
+  .post-content__content .table-scroll > table:not(.post-table) {
+    width: max-content;
+    min-width: 100%;
+    max-width: none;
+  }
+}
+
 .table-scroll tbody th:first-child,
 .table-scroll tbody td:first-child,
 .table-scroll thead tr:first-child > th:first-child {

@@ -92,7 +92,7 @@ Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đ
 
 <div class="table-scroll">
 <table class="post-table">
-<caption>Bảng 1. Mô phỏng (Nguồn: Hình 4, arXiv 2610.12470)</caption>
+<caption>Bảng 1a. Mô phỏng (Nguồn: Hình 4, arXiv 2610.12470)</caption>
 <thead>
 <tr>
 <th rowspan="2">Nhiệm vụ</th>
@@ -136,7 +136,7 @@ Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đ
 
 <div class="table-scroll">
 <table class="post-table">
-<caption>Bảng 1. Thực tế (Nguồn: Hình 4, arXiv 2610.12470)</caption>
+<caption>Bảng 1b. Thực tế (Nguồn: Hình 4, arXiv 2610.12470)</caption>
 <thead>
 <tr>
 <th rowspan="2">Nhiệm vụ</th>

@@ -5,9 +5,10 @@ import mdx from "@astrojs/mdx";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkBasePath from './src/utils/remark-base-path.mjs';
+import rehypeTableScroll from './src/utils/rehype-table-scroll.mjs';
 
 const remarkPlugins = [remarkMath, [remarkBasePath, settings.base]];
-const rehypePlugins = [rehypeKatex];
+const rehypePlugins = [rehypeKatex, rehypeTableScroll];
 
 // https://astro.build/config
 export default defineConfig({

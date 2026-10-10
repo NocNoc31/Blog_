@@ -90,7 +90,7 @@ Nguồn: Hình 4, arXiv 2610.12470
 
 Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đơn vị %):
 
-<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng cuộn ngang">
+<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng 1a. Mô phỏng">
 <table class="post-table">
 <caption>Bảng 1a. Mô phỏng (Nguồn: Hình 4, arXiv 2610.12470)</caption>
 <thead>
@@ -134,7 +134,7 @@ Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đ
 </table>
 </div>
 
-<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng cuộn ngang">
+<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng 1b. Thực tế">
 <table class="post-table">
 <caption>Bảng 1b. Thực tế (Nguồn: Hình 4, arXiv 2610.12470)</caption>
 <thead>
@@ -204,7 +204,7 @@ Nguồn: Hình 5, arXiv 2610.12470
 
 Vì scene graph không phụ thuộc vào bàn tay, cùng một đặc tả nhiệm vụ có thể dùng cho nhiều embodiment, chỉ cần thay URDF và tập grasp. Trong mô phỏng (500 episode mỗi nhiệm vụ), bốn tổ hợp đều đạt tỉ lệ thành công trung bình từ 94.6% đến 96.8%:
 
-<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng cuộn ngang">
+<div class="table-scroll" tabindex="0" role="region" aria-label="Bảng 2. Tỉ lệ thành công theo embodiment">
 <table class="post-table">
 <caption>Bảng 2. Tỉ lệ thành công theo embodiment (Nguồn: Table 1, arXiv 2610.12470)</caption>
 <thead>

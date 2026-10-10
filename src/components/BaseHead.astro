@@ -1,4 +1,6 @@
 ---
+import fs from 'node:fs';
+import path from 'node:path';
 import {settings} from "../data/settings";
 import {withBase} from "../utils/helpers";
 
@@ -15,7 +17,21 @@ export interface Props {
 const title = Astro.props.title || settings.title;
 const description = Astro.props.description || settings.description;
 const canonicalURL = Astro.props.canonicalURL || new URL(withBase(Astro.url.pathname), settings.site);
-const image = new URL(withBase(Astro.props.image || '/social.png'), settings.site);
+
+const publicDir = path.join(process.cwd(), 'public');
+const extensionCandidates = ['.png', '.jpg', '.jpeg', '.webp'];
+
+function socialImagePath(image) {
+  const fallback = '/social.png';
+  const value = typeof image === 'string' && image.trim() ? image.trim() : fallback;
+  const [pathOnly, suffix = ''] = value.split(/([?#].*)/);
+  if (/\.[a-z0-9]+$/i.test(pathOnly)) return value;
+  const relative = pathOnly.replace(/^\//, '');
+  const found = extensionCandidates.find((ext) => fs.existsSync(path.join(publicDir, relative + ext)));
+  return `${pathOnly}${found || '.png'}${suffix}`;
+}
+
+const image = new URL(withBase(socialImagePath(Astro.props.image)), settings.site);
 ---
 
 <meta charset="utf-8" />

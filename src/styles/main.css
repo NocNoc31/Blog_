@@ -1,24 +1,39 @@
+@import './fonts.css';
+
 :root {
-  /* Colors */
-  --theme-primary: hsl(0, 0%, 5%);
-  --theme-on-primary: hsl(0, 0%, 90%);
+  color-scheme: light;
 
-  --theme-primary-hover: hsl(0, 0%, 10%);
+  /* Pantheon paper / ink / red. Muted passes WCAG AA on both papers. */
+  --color-paper: #eef0e9;
+  --color-paper-raised: #f1f0e9;
+  --color-ink: #171913;
+  --color-ink-soft: #2b2e27;
+  --color-muted: #62645e;
+  --color-border: #c8c8bd;
+  --color-accent: #b3263c;
+  --color-accent-hover: #8e1e30;
+  --color-code-bg: #e4e6dc;
+  --color-focus: var(--color-accent);
+  --color-footer-bg: #171913;
+  --color-footer-fg: #eef0e9;
+  /* Light chip stays paper-on-ink in both themes (footer button). */
+  --color-chip: #f1f0e9;
+  --color-chip-hover: #e4e6dc;
+  --color-on-chip: #171913;
 
-  --theme-primary-light: hsl(0, 0%, 80%);
+  --theme-primary: var(--color-ink);
+  --theme-on-primary: var(--color-paper);
+  --theme-primary-hover: var(--color-ink-soft);
+  --theme-primary-light: var(--color-border);
+  --theme-background: var(--color-paper);
+  --theme-on-background: var(--color-ink);
+  --theme-surface-1: var(--color-paper-raised);
+  --theme-on-surface-1: var(--color-ink);
+  --theme-footer-background: var(--color-footer-bg);
+  --theme-on-footer-background: var(--color-footer-fg);
+  --color-gray: var(--color-muted);
 
-  --theme-background: hsl(0, 0%, 98%);
-  --theme-on-background: hsl(0, 0%, 5%);
-
-  --theme-surface-1: hsl(0, 0%, 93%);
-  --theme-on-surface-1: hsl(0, 0%, 10%);
-
-  --theme-footer-background: hsl(0, 0%, 3%);
-  --theme-on-footer-background: hsl(0, 0%, 90%);
-
-  /* Typography */
- /* @link https://utopia.fyi/type/calculator?c=320,18,1.2,1140,24,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l */
-
+  /* Fluid scale. @link https://utopia.fyi/type/calculator?c=320,18,1.2,1140,24,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l */
   --step--2: clamp(0.78rem, calc(0.71rem + 0.35vw), 0.96rem);
   --step--1: clamp(0.94rem, calc(0.84rem + 0.51vw), 1.20rem);
   --step-0: clamp(1.13rem, calc(0.98rem + 0.73vw), 1.50rem);
@@ -28,71 +43,53 @@
   --step-4: clamp(2.33rem, calc(1.81rem + 2.59vw), 3.66rem);
   --step-5: clamp(2.80rem, calc(2.11rem + 3.47vw), 4.58rem);
 
-  --font-family-heading: '', sans-serif;
-  --font-family-body: 'Open Sans', sans-serif;
+  --font-family-heading: "Source Serif 4", "Source Serif 4 Fallback", "Palatino Linotype", Palatino, serif;
+  --font-family-body: "Source Serif 4", "Source Serif 4 Fallback", "Palatino Linotype", Palatino, serif;
+  --font-family-ui: "Geist", "Geist Fallback", "Segoe UI", sans-serif;
+  --font-family-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
 
   --body-max-width: 1920px;
+  /* 720px. Sits in the 640–760px reading column. */
+  --reading-max: 45rem;
 
-  /* Container */
   --container-padding: 0 1rem;
   --container-max-width: 860px;
 
   --header-height: 76px;
 
-  /* Transitions */
   --ease-out-soft: cubic-bezier(0.28, 0, 0.49, 1);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    /* Colors */
-    --theme-primary: hsl(0, 0%, 90%);
-    --theme-on-primary: hsl(0, 0%, 5%);
-
-    --theme-primary-hover: hsl(0, 0%, 80%);
-
-    --theme-primary-light: hsl(0, 0%, 20%);
-
-    --theme-on-background: hsl(0, 0%, 92%);
-    --theme-background: hsl(0, 0%, 8%);
-
-    --theme-surface-1: hsl(0, 0%, 12%);
-    --theme-on-surface-1: hsl(0, 0%, 96%);
+  :root:not([color-scheme='light']) {
+    color-scheme: dark;
+    --color-paper: #171913;
+    --color-paper-raised: #1c1c1a;
+    --color-ink: #eef0e9;
+    --color-ink-soft: #d5d6cc;
+    --color-muted: #a8aaa3;
+    --color-border: #676860;
+    --color-accent: #e56c7f;
+    --color-accent-hover: #f2b3bd;
+    --color-code-bg: #22241c;
+    --color-footer-bg: #10110d;
+    --color-footer-fg: #eef0e9;
   }
-}
-
-[color-scheme='light'] {
-  color-scheme: light;
-  /* Colors */
-  --theme-primary: hsl(0, 0%, 5%);
-  --theme-on-primary: hsl(0, 0%, 90%);
-
-  --theme-primary-hover: hsl(0, 0%, 10%);
-
-  --theme-primary-light: hsl(0, 0%, 80%);
-
-  --theme-background: hsl(0, 0%, 98%);
-  --theme-on-background: hsl(0, 0%, 5%);
-
-  --theme-surface-1: hsl(0, 0%, 93%);
-  --theme-on-surface-1: hsl(0, 0%, 10%);
 }
 
 [color-scheme='dark'] {
   color-scheme: dark;
-  /* Colors */
-  --theme-primary: hsl(0, 0%, 90%);
-  --theme-on-primary: hsl(0, 0%, 5%);
-
-  --theme-primary-hover: hsl(0, 0%, 80%);
-
-  --theme-primary-light: hsl(0, 0%, 20%);
-
-  --theme-on-background: hsl(0, 0%, 92%);
-  --theme-background: hsl(0, 0%, 8%);
-
-  --theme-surface-1: hsl(0, 0%, 12%);
-  --theme-on-surface-1: hsl(0, 0%, 96%);
+  --color-paper: #171913;
+  --color-paper-raised: #1c1c1a;
+  --color-ink: #eef0e9;
+  --color-ink-soft: #d5d6cc;
+  --color-muted: #a8aaa3;
+  --color-border: #676860;
+  --color-accent: #e56c7f;
+  --color-accent-hover: #f2b3bd;
+  --color-code-bg: #22241c;
+  --color-footer-bg: #10110d;
+  --color-footer-fg: #eef0e9;
 }
 
 html {
@@ -168,7 +165,7 @@ h3 {
 
 p,
 li {
-  max-width: 70ch;
+  max-width: var(--reading-max);
 }
 
 pre {
@@ -177,6 +174,9 @@ pre {
   overflow-x: auto;
   padding: 1rem 0.75rem;
   border-radius: 0.25rem;
+  background: var(--color-code-bg);
+  color: var(--color-ink);
+  font-family: var(--font-family-mono);
 }
 
 pre copy-code-button {
@@ -249,7 +249,7 @@ main.flow {
   caption-side: top;
   text-align: center;
   font-style: italic;
-  color: #666;
+  color: var(--color-muted);
   font-size: 0.9em;
   margin-bottom: 0.5em;
 }
@@ -347,7 +347,7 @@ main.flow {
 .post-table__note {
   font-size: 0.9em;
   font-style: italic;
-  color: #666;
+  color: var(--color-muted);
   margin-top: 0.4em;
 }
 
@@ -374,4 +374,48 @@ main.flow {
       transform: translateY(2ex);
       opacity: 0;
   }
+}
+
+header,
+footer,
+button {
+  font-family: var(--font-family-ui);
+}
+
+.post-preview__category,
+.post-preview__date,
+.post-content__category,
+.post-content__date,
+.post-content__content table,
+code,
+kbd,
+samp {
+  font-family: var(--font-family-mono);
+}
+
+.post-preview__date,
+.post-content__date {
+  font-style: normal;
+  color: var(--color-muted);
+}
+
+.post-content__content a {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
+}
+
+.post-content__content a:hover {
+  color: var(--color-accent-hover);
+}
+
+.katex {
+  color: var(--color-ink);
+}
+
+.table-scroll:focus,
+.table-scroll:focus-visible,
+.katex-display:focus,
+.katex-display:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
 }

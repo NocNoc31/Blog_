@@ -1,18 +1,12 @@
 ---
 layout: '../../layouts/Post.astro'
 title: 'Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation'
-description: 'Giải thích kiểu Feynman bài báo arXiv 2511.19709 (ETH Zurich): một bộ MPC toàn thân mức mô-men, dựa trên động lực học ngược, chạy real-time 80 Hz trên Unitree B2 + Z1, không cần bộ điều khiển toàn thân cấp thấp, kéo được tải 10 kg.'
+description: 'Bài báo arXiv 2511.19709 (ETH Zurich) đề xuất một bộ MPC toàn thân mức mô-men, dựa trên động lực học ngược, chạy real-time 80 Hz trên Unitree B2 + Z1, không cần bộ điều khiển toàn thân cấp thấp, kéo được tải 10 kg.'
 publishedAt: 2026-10-10
 image: /images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig1_standing_pulling
 alt: Robot Unitree B2 gắn tay Z1 kéo tải 10 kg khi đứng
 category: HUST
 ---
-
-*Ảnh đại diện: Hình 1, Molnar et al., arXiv 2511.19709, CC BY 4.0*
-
-> **Bài báo:** *Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation*. Lukas Molnar, Jin Cheng, Gabriele Fadini, Dongho Kang, Fatemeh Zargarbashi, Stelian Coros (Computational Robotics Lab, ETH Zurich). arXiv 2511.19709, **phiên bản v1, 24/11/2025**, giấy phép **CC BY 4.0**. Các hình ghi "Nguồn: Hình N" được lấy nguyên từ bài báo theo giấy phép này; hình ghi "Minh họa" do tác giả blog tự vẽ.
-
-Bài viết theo tinh thần phương pháp Feynman: mỗi khái niệm khó được mở đầu bằng một ví dụ quen thuộc, sau đó trình bày chính xác, và mỗi phần kết thúc bằng một đoạn **Tóm lại**.
 
 ## 1. Loco-manipulation cần điều phối toàn thân, và kiến trúc phân tầng không còn đủ
 
@@ -28,8 +22,8 @@ Bài báo đặt câu hỏi: liệu có thể gộp lập kế hoạch chuyển 
 
 ![Minh họa so sánh kiến trúc phân tầng và MPC toàn thân một tầng](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/minhhoa_kien_truc.png)
 
-*Minh họa: bên trái là kiến trúc phân tầng truyền thống (MPC rút gọn, WBC, rồi PD); bên phải là cách tiếp cận của bài báo, trong đó một MPC toàn thân đưa lời giải thẳng xuống vòng PD mức khớp.*
-Minh họa: tác giả blog tự vẽ dựa trên mô tả trong bài báo.
+*Bên trái là kiến trúc phân tầng truyền thống (MPC rút gọn, WBC, rồi PD); bên phải là cách tiếp cận của bài báo, trong đó một MPC toàn thân đưa lời giải thẳng xuống vòng PD mức khớp.*
+Minh họa
 
 **Tóm lại:** loco-manipulation đòi hỏi điều phối tay và chân như một thể thống nhất. Kiến trúc hai tầng nhanh nhưng dựa trên mô hình rút gọn thiếu chính xác, còn MPC toàn thân trước đây quá chậm để chạy real-time.
 
@@ -194,6 +188,6 @@ Lực và vận tốc tay là lệnh từ bên ngoài; vật thể không đư�
 
 ## Tham khảo
 
-- Bài báo: [arXiv 2511.19709 (v1, CC BY 4.0)](https://arxiv.org/abs/2511.19709)
+- Lukas Molnar, Jin Cheng, Gabriele Fadini, Dongho Kang, Fatemeh Zargarbashi, Stelian Coros (Computational Robotics Lab, ETH Zurich). *Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation*. [arXiv 2511.19709](https://arxiv.org/abs/2511.19709), v1, 24/11/2025, CC BY 4.0. Ảnh đầu trang và các hình đánh số lấy từ bài báo.
 - Website dự án: <https://lukasmolnar.github.io/wb-mpc-locoman>
 - Code: <https://github.com/lukasmolnar/wb-mpc-locoman>

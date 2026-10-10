@@ -1,16 +1,12 @@
 ---
 layout: '../../layouts/Post.astro'
 title: 'Dex-One2Many: Learning Dexterous Manipulation from a Single Human Demonstration'
-description: 'Tóm tắt và phân tích bài báo arXiv 2610.12470: từ một video người duy nhất, Dex-One2Many trích xuất cấu trúc nhiệm vụ dưới dạng scene graph theo giai đoạn, học chính sách tay khéo léo bằng RL trong mô phỏng và chuyển zero-shot sang tay robot 20 bậc tự do, đạt 75% thành công trung bình trên cấu hình chưa thấy.'
+description: 'Bài báo arXiv 2610.12470: từ một video người duy nhất, Dex-One2Many trích xuất cấu trúc nhiệm vụ dưới dạng scene graph theo giai đoạn, học chính sách tay khéo léo bằng RL trong mô phỏng và chuyển zero-shot sang tay robot 20 bậc tự do, đạt 75% thành công trung bình trên cấu hình chưa thấy.'
 publishedAt: 2026-10-10
 image: /images/Dex-One2Many/hero_fig1
 alt: 'Hình 1 của bài báo Dex-One2Many: từ một video người đến nhiều hành vi khéo léo trên robot thật và trong mô phỏng'
 category: HUST
 ---
-
-> **Bài báo:** *Dex-One2Many: Learning Dexterous Manipulation from a Single Human Demonstration*. Jusuk Lee\*, Sungha Kim\*, Yeonsoo Park\*, Jonguk Cheon, Yoonkyo Jung, Yongjun You, H. Jin Kim, Jia-Bin Huang, Furong Huang, Youngseok Jang†, Seungjae Lee† (Seoul National University, University of Maryland College Park, KAIST; \* đóng góp ngang nhau, † đồng hướng dẫn). arXiv 2610.12470, phiên bản v1, giấy phép **CC BY 4.0** (theo trang arXiv).
->
-> **Nguồn hình và video:** ảnh đầu trang là Hình 1 của bài báo (thêm lề trắng cho vừa tỉ lệ ảnh bìa, không cắt nội dung). Các hình ghi "Nguồn: Hình N" lấy từ bài báo arXiv v1, phát hành theo giấy phép CC BY 4.0 (đã kiểm tra trên trang abs); Hình 4 được kết xuất từ PDF và chỉ giữ phần biểu đồ. Hình ghi "Minh họa" do tác giả blog tự vẽ. Mọi video được nhúng trực tiếp từ URL gốc trên trang dự án <https://dex-one2many.github.io/>, không tải về hay lưu lại; ảnh poster duy nhất (video phương pháp) cũng được nhúng từ URL gốc của trang dự án. Trang dự án ghi "This website is licensed under a CC BY-SA 4.0 license" nhưng không nói rõ giấy phép này có áp dụng cho video và hình ảnh hay không, vì vậy mọi video đều được ghi nguồn về nhóm tác giả.
 
 ## 1. Học từ một video: vì sao bắt chước chuyển động không tổng quát được
 
@@ -22,7 +18,7 @@ Nhóm tác giả chỉ ra hai thách thức gắn chặt với nhau: **trừu t�
 
 <figure>
 <video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/one2many_human.mp4"></video>
-<figcaption>Đầu vào duy nhất của phương pháp: một video người đặt búp bê vào bát (0.27 MB, 5.6 s). Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Đầu vào duy nhất của phương pháp: một video người đặt búp bê vào bát. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
@@ -38,9 +34,7 @@ Nhóm tác giả chỉ ra hai thách thức gắn chặt với nhau: **trừu t�
 ![So sánh bắt chước chuyển động và trích xuất cấu trúc nhiệm vụ](/images/Dex-One2Many/minhhoa_motion_vs_structure.png)
 
 *Bên trái: bắt chước chuyển động sao chép quỹ đạo kèm tọa độ nên bị gắn với cấu hình trong video. Bên phải: Dex-One2Many chỉ giữ lại quan hệ giữa tay và vật theo từng giai đoạn, rồi để RL tự học cách thực hiện.*
-Minh họa: tác giả blog tự vẽ dựa trên mô tả trong bài báo.
-
-**Lưu ý:** code chưa public; tại thời điểm viết bài, trang dự án chỉ ghi "Code (Coming soon)", nên các chi tiết dưới đây dựa hoàn toàn vào bài báo.
+Minh họa
 
 **Tóm lại:** sao chép chuyển động từ một video chỉ cho ra hành vi quanh đúng cấu hình đó; muốn tổng quát, cần hiểu nhiệm vụ "là gì" chứ không chỉ "trông như thế nào".
 
@@ -78,7 +72,7 @@ trong đó $g$ là giai đoạn đầu tiên có predicate grasp, $r_{i,t}$ là 
 
 <figure>
 <video controls preload="none" width="640" poster="https://dex-one2many.github.io/static/images/method_poster.jpg" src="https://dex-one2many.github.io/static/videos/method_video.mp4"></video>
-<figcaption>Video giải thích phương pháp có thuyết minh của nhóm tác giả (27.5 MB, khoảng 3 phút 36 giây; chỉ tải khi bấm phát). Nguồn: video và ảnh poster đều nhúng từ URL gốc trên trang dự án Dex-One2Many.</figcaption>
+<figcaption>Video giải thích phương pháp có thuyết minh của nhóm tác giả. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 **Tóm lại:** VLM biến video thành chuỗi quan hệ theo giai đoạn; chuỗi này vừa sinh ra các điểm bắt đầu đa dạng, vừa cung cấp reward dày, để RL tự học cách thực hiện trên từng bàn tay cụ thể.
@@ -91,7 +85,7 @@ Hệ thống thật gồm cánh tay UR3 và bàn tay **Wuji 1 20 bậc tự do**
 
 ![Tỉ lệ thành công Seen/Unseen trong mô phỏng và thực tế](/images/Dex-One2Many/fig4_success_rates.png)
 
-*Tỉ lệ thành công trên cấu hình Seen (trên) và Unseen (dưới), trong mô phỏng (trái) và thực tế (phải). Ảnh chỉ gồm phần biểu đồ, kết xuất từ PDF; hàng ảnh minh họa nhiệm vụ của hình gốc được lược bỏ.*
+*Tỉ lệ thành công trên cấu hình Seen (trên) và Unseen (dưới), trong mô phỏng (trái) và thực tế (phải).*
 Nguồn: Hình 4, arXiv 2610.12470
 
 Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đơn vị %):
@@ -104,7 +98,7 @@ Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đ
 | Thực tế, Unseen | 0 / 0 / 80 | 0 / 15 / 75 | 10 / 0 / 85 | 5 / N/A / 60 | 5 / 0 / 75 |
 
 N/A: thí nghiệm không thực hiện được do hỏng phần cứng.
-Nguồn: Hình 4, arXiv 2610.12470 (số liệu đối chiếu với file dữ liệu biểu đồ trên trang dự án).
+Nguồn: Hình 4, arXiv 2610.12470
 
 Trên cấu hình Seen, baseline đạt tỉ lệ cao ở nhiều nhiệm vụ, cho thấy hướng dẫn ở mức chuyển động có thể tái tạo đúng cấu hình trong video. Khác biệt xuất hiện rõ ở cấu hình Unseen: baseline đạt **không quá 15%** cả trong mô phỏng lẫn thực tế, trong khi Dex-One2Many đạt **85–100%** trong mô phỏng và **60–85%** trên robot thật. Trung bình trên robot thật ở cấu hình Unseen, Dex-One2Many đạt **75%**, hơn baseline tốt nhì **71 điểm phần trăm**. Theo tóm tắt của bài báo, phương pháp vượt baseline **6.5%** ở cấu hình Seen và **71%** ở cấu hình Unseen.
 
@@ -115,12 +109,12 @@ Nguồn: Hình 5, arXiv 2610.12470
 
 <figure>
 <video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/real/can_1.mp4"></video>
-<figcaption>Robot thật, nhiệm vụ Can (1.11 MB). Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Robot thật, nhiệm vụ Can. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
 <video controls preload="metadata" width="640" src="https://dex-one2many.github.io/static/videos/real/stamp_1.mp4"></video>
-<figcaption>Robot thật, nhiệm vụ Stamp (0.87 MB). Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Robot thật, nhiệm vụ Stamp. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 **Tóm lại:** ở cấu hình có trong video, baseline và Dex-One2Many đều có thể làm tốt; ở cấu hình mới, baseline gần như thất bại, còn Dex-One2Many vẫn đạt 60–85% trên robot thật.
@@ -149,22 +143,22 @@ Nguồn: Table 1, arXiv 2610.12470
 
 <figure>
 <video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur3_wuji1_1.mp4"></video>
-<figcaption>Mô phỏng, Sweep, UR3 + Wuji 1, một cấu hình unseen (1.75 MB). Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Mô phỏng, Sweep, UR3 + Wuji 1, một cấu hình unseen. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
 <video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_sharpa_1.mp4"></video>
-<figcaption>Mô phỏng, Sweep, UR5e + Sharpa (1.73 MB). Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Mô phỏng, Sweep, UR5e + Sharpa. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
 <video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_wuji2_1.mp4"></video>
-<figcaption>Mô phỏng, Sweep, UR5e + Wuji 2 (1.92 MB). Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Mô phỏng, Sweep, UR5e + Wuji 2. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 <figure>
 <video controls preload="metadata" width="480" src="https://dex-one2many.github.io/static/videos/sim/sweep_ur5e_allegro_1.mp4"></video>
-<figcaption>Mô phỏng, Sweep, UR5e + Allegro (1.87 MB). Các clip mô phỏng còn lại có trên trang dự án. Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Mô phỏng, Sweep, UR5e + Allegro. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 ![Chiến lược grasp đa dạng theo bàn tay và cấu hình](/images/Dex-One2Many/fig6_diverse_grasp.jpg)
@@ -190,19 +184,19 @@ Quy mô huấn luyện cũng quan trọng: với 49,152 môi trường song song
 
 **Ví dụ.** Một tài xế lái giỏi trong mô phỏng vẫn cần quen với gương chiếu hậu hơi mờ của chiếc xe thật.
 
-Nhóm tác giả nêu hai hạn chế. Thứ nhất, vẫn còn khoảng cách sim-to-real do phụ thuộc vào pose 6D ước lượng; nhiễu pose và sai khác hình học của vật ảnh hưởng nhiều nhất ở các pha giàu tiếp xúc. Thứ hai, pipeline real-to-sim chỉ dựng được vật cứng; vật có khớp cần dựng asset thủ công. Ngoài ra, có thể nhận xét thêm (đây là nhận định của người viết, không phải của tác giả): thực nghiệm gồm 5 nhiệm vụ trên mặt bàn với 20 lượt Unseen mỗi nhiệm vụ trên robot thật, chỉ một embodiment được thử trên phần cứng, phương pháp cần rất nhiều môi trường song song trên GPU, phụ thuộc vào VLM và bộ predicate định sẵn, và code chưa được công bố.
+Nhóm tác giả nêu hai hạn chế. Thứ nhất, vẫn còn khoảng cách sim-to-real do phụ thuộc vào pose 6D ước lượng; nhiễu pose và sai khác hình học của vật ảnh hưởng nhiều nhất ở các pha giàu tiếp xúc. Thứ hai, pipeline real-to-sim chỉ dựng được vật cứng; vật có khớp cần dựng asset thủ công. Ngoài ra, thực nghiệm gồm 5 nhiệm vụ trên mặt bàn với 20 lượt Unseen mỗi nhiệm vụ trên robot thật, chỉ một embodiment được thử trên phần cứng, phương pháp cần rất nhiều môi trường song song trên GPU, và phụ thuộc vào VLM cùng bộ predicate định sẵn. Mã nguồn của bài báo hiện chưa được công bố.
 
 Với các nhóm robotics và humanoid tại Việt Nam, hướng tiếp cận này có ba điểm đáng chú ý. Một video quay bằng điện thoại cùng mô phỏng có thể đủ để khởi động một chính sách tay khéo léo, giảm chi phí dữ liệu so với teleoperation. Thiết kế "VLM hiểu làm gì, RL học làm thế nào" cho phép dùng lại cùng một đặc tả nhiệm vụ khi phần cứng thay đổi. Các kỹ thuật như reset theo giai đoạn, reward suy từ predicate và lớp QP để thêm ràng buộc an toàn khi triển khai có thể áp dụng ngay vào các pipeline RL hiện có.
 
 <figure>
 <video controls preload="none" width="640" src="https://dex-one2many.github.io/static/videos/overview.mp4"></video>
-<figcaption>Video tổng quan có thuyết minh của nhóm tác giả (24.8 MB, khoảng 1 phút 49 giây; chỉ tải khi bấm phát). Nguồn: trang dự án Dex-One2Many.</figcaption>
+<figcaption>Video tổng quan có thuyết minh của nhóm tác giả. Nguồn: trang dự án Dex-One2Many.</figcaption>
 </figure>
 
 **Tóm lại:** phương pháp còn phụ thuộc vào ước lượng pose, chỉ xử lý vật cứng và cần tài nguyên mô phỏng lớn, nhưng mở ra một cách rẻ để dạy tay robot từ một video duy nhất.
 
 ## Tham khảo
 
-- Bài báo: [arXiv 2610.12470 (v1, CC BY 4.0)](https://arxiv.org/abs/2610.12470)
-- Trang dự án (video và biểu đồ; website CC BY-SA 4.0): <https://dex-one2many.github.io/>
-- Code: chưa công bố ("Coming soon" trên trang dự án)
+- Jusuk Lee, Sungha Kim, Yeonsoo Park, Jonguk Cheon, Yoonkyo Jung, Yongjun You, H. Jin Kim, Jia-Bin Huang, Furong Huang, Youngseok Jang, Seungjae Lee (Seoul National University, University of Maryland College Park, KAIST). *Dex-One2Many: Learning Dexterous Manipulation from a Single Human Demonstration*. [arXiv 2610.12470](https://arxiv.org/abs/2610.12470), v1, CC BY 4.0. Ảnh đầu trang và các hình đánh số lấy từ bài báo.
+- Trang dự án (nguồn các video; website ghi giấy phép CC BY-SA 4.0): <https://dex-one2many.github.io/>
+- Mã nguồn: chưa được công bố.

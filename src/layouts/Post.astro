@@ -3,8 +3,10 @@ import 'katex/dist/katex.min.css';
 import Layout from './Page.astro';
 import Container from '../components/Container.astro';
 import { formatDate, slugify, withBase } from '../utils/helpers';
+import { resolveHeroImage } from '../utils/public-image';
 
 const { frontmatter } = Astro.props;
+const hero = resolveHeroImage(frontmatter.image);
 
 const seo = {
   title: frontmatter.title,
@@ -32,15 +34,15 @@ const seo = {
         </p>
         <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
         {
-          frontmatter.image && (
+          hero.src && (
             <picture>
-              <source srcset={`${withBase(frontmatter.image)}.webp`} type="image/webp" />
+              {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
               <img
                 width="1200"
                 height="630"
                 class="post-content__img"
                 loading="eager"
-                src={`${withBase(frontmatter.image)}.png`}
+                src={withBase(hero.src)}
                 alt={frontmatter.alt}
               />
             </picture>

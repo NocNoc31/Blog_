@@ -1,16 +1,19 @@
 ---
 const {post} = Astro.props;
-import {formatDate, withBase} from '../utils/helpers'
+import {formatDate, withBase} from '../utils/helpers';
+import {resolveHeroImage} from '../utils/public-image';
+
+const hero = resolveHeroImage(post.frontmatter.image);
 
 ---
 
 <a class="post-preview__link fade-in" href={post.url}>
-<article class:list={['post-preview__article', { 'post-preview__article--no-image': !post.frontmatter.image }]}>
+<article class:list={['post-preview__article', { 'post-preview__article--no-image': !hero.src }]}>
   <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
-  {post.frontmatter.image && (
+  {hero.src && (
     <picture>
-      <source srcset={`${withBase(post.frontmatter.image)}.webp`} type="image/webp">
-      <img class="post-preview__img" src={`${withBase(post.frontmatter.image)}.png`} alt={`Featured image for ${post.frontmatter.title}`} >
+      {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
+      <img class="post-preview__img" src={withBase(hero.src)} alt={`Featured image for ${post.frontmatter.title}`} >
     </picture>
   )}
   <div class="post-preview__text">

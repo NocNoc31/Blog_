@@ -24,7 +24,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Astro 7 requires Node >= 22.12. The Pages guide's action defaults to 24.
+          # Source: https://docs.astro.build/en/guides/upgrade-to/v6/#dependency-upgrades
+          # Source: https://docs.astro.build/en/guides/deploy/github/
+          node-version: 24
           cache: npm
       - name: Install and build
         run: npm ci && npm run build

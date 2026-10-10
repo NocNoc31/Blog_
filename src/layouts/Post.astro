@@ -8,10 +8,18 @@ import { resolveHeroImage } from '../utils/public-image';
 const { frontmatter } = Astro.props;
 const hero = resolveHeroImage(frontmatter.image);
 
+// At a phone width the long titles are taller than the hero, so preloading
+// the hero only delays that text. Preload when the picture is the larger box.
+const contentWidth = 380;
+const imageHeight = hero.width ? (contentWidth * hero.height) / hero.width : 0;
+const titleLines = Math.ceil(String(frontmatter.title ?? '').trim().length / 17) || 1;
+const heroIsLcp = imageHeight >= titleLines * 45 * 1.15;
+
 const seo = {
   title: frontmatter.title,
   description: frontmatter.description,
   image: frontmatter.image,
+  lcpImage: heroIsLcp ? hero.webp || hero.src || undefined : undefined,
 };
 ---
 
@@ -38,12 +46,13 @@ const seo = {
             <picture>
               {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
               <img
-                width="1200"
-                height="630"
+                width={hero.width ?? 1200}
+                height={hero.height ?? 630}
                 class="post-content__img"
                 loading="eager"
+                fetchpriority={heroIsLcp ? 'high' : 'low'}
                 src={withBase(hero.src)}
-                alt={frontmatter.alt}
+                alt={frontmatter.alt || frontmatter.title}
               />
             </picture>
           )
@@ -138,14 +147,14 @@ const seo = {
   }
   .post-content__img {
     margin: 3rem auto;
-    max-width: 800px; /* Giới hạn chiều rộng ảnh tiêu đề */
+    max-width: min(100%, 800px); /* Giới hạn chiều rộng ảnh tiêu đề */
     width: 100%;
     height: auto;
     border-radius: 2rem;
     display: block;
   }
   .post-content__content :global(img) {
-    max-width: 800px; /* Giới hạn chiều rộng ảnh trong nội dung */
+    max-width: min(100%, 800px); /* Giới hạn chiều rộng ảnh trong nội dung */
     width: 100%;
     height: auto;
     margin: 2rem auto;
@@ -160,7 +169,21 @@ const seo = {
     margin-top: 0.5em;
   }
   .post-content__content :global(.katex-display) {
+    display: block;
+    max-width: 100%;
+    min-width: 0;
     overflow-x: auto;
     overflow-y: hidden;
+  }
+  .post-content__content :global(iframe) {
+    max-width: 100%;
+  }
+  .post-content__content :global(pre) {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .post-content__content :global(a) {
+    overflow-wrap: anywhere;
   }
 </style>

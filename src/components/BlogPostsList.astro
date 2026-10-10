@@ -5,9 +5,9 @@ const {posts} = Astro.props;
 ---
 
 <ul>
-  {posts.map((post) => (
+  {posts.map((post, index) => (
     <li>
-      <BlogPostPreview post={post} />
+      <BlogPostPreview post={post} priority={index === 0} />
     </li>
   ))}
 </ul>

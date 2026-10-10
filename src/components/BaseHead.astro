@@ -11,6 +11,7 @@ export interface Props {
 	description?: string;
 	canonicalURL?: URL | string;
 	image?: string;
+	lcpImage?: string;
 }
 
 const title = Astro.props.title || settings.title;
@@ -18,10 +19,12 @@ const description = Astro.props.description || settings.description;
 const canonicalURL = Astro.props.canonicalURL || new URL(withBase(Astro.url.pathname), settings.site);
 
 const image = new URL(withBase(resolveOgImagePath(Astro.props.image)), settings.site);
+const lcpImage = Astro.props.lcpImage || null;
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+{lcpImage && <link rel="preload" as="image" href={withBase(lcpImage)} fetchpriority="high" />}
 <!-- Favicon -->
 <link rel="icon" type="image/svg" href={withBase('/favicon.svg')} />
 <!-- Primary Meta Tags -->

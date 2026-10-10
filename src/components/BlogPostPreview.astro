@@ -1,5 +1,5 @@
 ---
-const {post} = Astro.props;
+const {post, priority = false} = Astro.props;
 import {formatDate, withBase} from '../utils/helpers';
 import {resolveHeroImage} from '../utils/public-image';
 
@@ -12,8 +12,19 @@ const hero = resolveHeroImage(post.frontmatter.image);
   <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
   {hero.src && (
     <picture>
-      {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
-      <img class="post-preview__img" src={withBase(hero.src)} alt={`Featured image for ${post.frontmatter.title}`} >
+      {(priority && hero.card) || hero.webp ? (
+        <source srcset={withBase((priority && hero.card) || hero.webp)} type="image/webp" />
+      ) : null}
+      <img
+        class="post-preview__img"
+        src={withBase(hero.src)}
+        alt={`Featured image for ${post.frontmatter.title}`}
+        width={hero.width ?? undefined}
+        height={hero.height ?? undefined}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'auto' : 'async'}
+        fetchpriority={priority ? 'high' : 'low'}
+      >
     </picture>
   )}
   <div class="post-preview__text">

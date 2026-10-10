@@ -16,11 +16,6 @@ Bài viết theo tinh thần phương pháp Feynman: mỗi khái niệm khó đ�
 
 ## 1. Loco-manipulation cần điều phối toàn thân, và kiến trúc phân tầng không còn đủ
 
-![Robot B2 + Z1 kéo tải 10 kg khi đứng](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig1_standing_pulling.png)
-
-*Robot bốn chân Unitree B2 gắn tay máy Z1 kéo tải 10 kg khi đứng (ảnh trên của Hình 1; hai ảnh dưới trong bài báo là đẩy hộp vào tường và tương tác mềm với người).*
-Nguồn: Hình 1, arXiv 2511.19709
-
 **Ví dụ.** Một người vừa đi vừa kéo vali nặng không điều khiển tay và chân một cách tách biệt: khi tay kéo mạnh, thân tự ngả về trước và bước chân tự điều chỉnh.
 
 Robot bốn chân gắn tay máy đối mặt với đúng bài toán này, gọi là *loco-manipulation*. Đầu công tác (end-effector) phải bám vị trí chính xác và tạo hoặc chịu lực lớn khi kéo, đẩy vật nặng, trong khi robot vẫn phải giữ ổn định khi di chuyển. Do tay và thân liên kết động lực học chặt chẽ, lực ở tay truyền ngược về thân và phải được các chân bù lại.

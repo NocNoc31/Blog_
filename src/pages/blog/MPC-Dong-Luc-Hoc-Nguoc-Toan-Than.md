@@ -3,160 +3,117 @@ layout: '../../layouts/Post.astro'
 title: 'Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation'
 description: 'Giải thích kiểu Feynman bài báo arXiv 2511.19709 (ETH Zurich): một bộ MPC toàn thân mức mô-men, dựa trên động lực học ngược, chạy real-time 80 Hz trên Unitree B2 + Z1, không cần bộ điều khiển toàn thân cấp thấp, kéo được tải 10 kg.'
 publishedAt: 2026-10-10
-image: /images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig1_standing_pulling
 category: HUST
 ---
 
-> **Bài báo:** *Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation*. Lukas Molnar, Jin Cheng, Gabriele Fadini, Dongho Kang, Fatemeh Zargarbashi, Stelian Coros (Computational Robotics Lab, ETH Zurich). arXiv 2511.19709, **phiên bản v1, 24/11/2025**, giấy phép **CC BY 4.0**. Toàn bộ hình trong bài lấy từ bài báo theo giấy phép này.
+> **Bài báo:** *Whole-Body Inverse Dynamics MPC for Legged Loco-Manipulation*. Lukas Molnar, Jin Cheng, Gabriele Fadini, Dongho Kang, Fatemeh Zargarbashi, Stelian Coros (Computational Robotics Lab, ETH Zurich). arXiv 2511.19709, **phiên bản v1, 24/11/2025**, giấy phép **CC BY 4.0**. Các hình ghi "Nguồn: Hình N" được lấy nguyên từ bài báo theo giấy phép này; hình ghi "Minh họa" do tác giả blog tự vẽ.
 
-Bài này đi theo **phương pháp Feynman**: mỗi phần bắt đầu bằng một ví dụ đời thường, sau đó mới nói chính xác bằng ngôn ngữ kỹ thuật, và kết thúc bằng một đoạn **Tóm lại** đủ đơn giản để kể lại cho một người bạn không học robotics.
+Bài viết theo tinh thần phương pháp Feynman: mỗi khái niệm khó được mở đầu bằng một ví dụ quen thuộc, sau đó trình bày chính xác, và mỗi phần kết thúc bằng một đoạn **Tóm lại**.
+
+## 1. Loco-manipulation cần điều phối toàn thân, và kiến trúc phân tầng không còn đủ
 
 ![Robot B2 + Z1 kéo tải 10 kg khi đứng](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig1_standing_pulling.png)
 
-*Robot bốn chân Unitree B2 gắn tay máy Z1 kéo một tải 10 kg khi đang đứng (ảnh trên của Hình 1; hai ảnh dưới trong bài báo là đẩy hộp vào tường và tương tác mềm với người).*
+*Robot bốn chân Unitree B2 gắn tay máy Z1 kéo tải 10 kg khi đứng (ảnh trên của Hình 1; hai ảnh dưới trong bài báo là đẩy hộp vào tường và tương tác mềm với người).*
 Nguồn: Hình 1, arXiv 2511.19709
 
-## 1. Câu chuyện: một con robot vừa đi vừa làm việc bằng tay
+**Ví dụ.** Một người vừa đi vừa kéo vali nặng không điều khiển tay và chân một cách tách biệt: khi tay kéo mạnh, thân tự ngả về trước và bước chân tự điều chỉnh.
 
-**Ví dụ đời thường.** Bạn hãy thử vừa đi bộ vừa kéo một vali nặng. Bạn không nghĩ riêng "chân đi thế nào" rồi mới nghĩ "tay kéo thế nào". Khi tay kéo mạnh, người bạn tự ngả về trước, bước chân tự ngắn lại hoặc đặt rộng ra. Tay và chân được điều phối như một thể thống nhất.
+Robot bốn chân gắn tay máy đối mặt với đúng bài toán này, gọi là *loco-manipulation*. Đầu công tác (end-effector) phải bám vị trí chính xác và tạo hoặc chịu lực lớn khi kéo, đẩy vật nặng, trong khi robot vẫn phải giữ ổn định khi di chuyển. Do tay và thân liên kết động lực học chặt chẽ, lực ở tay truyền ngược về thân và phải được các chân bù lại.
 
-**Nói chính xác.** Robot bốn chân gắn tay máy phải làm đúng việc đó, gọi là *loco-manipulation* (vừa di chuyển vừa thao tác). Đầu công tác (end-effector) phải bám vị trí chính xác, phải tạo hoặc chịu lực lớn khi kéo, đẩy vật nặng, trong khi robot vẫn phải giữ ổn định lúc bước. Tay và thân liên kết động lực học rất mạnh: lực ở tay truyền ngược về thân, và chân phải bù lại.
+**Ví dụ.** Trên một công trường, kỹ sư vẽ bản thiết kế đơn giản hóa, còn đội thi công phải tự biến nó thành từng viên gạch. Khi bản vẽ bỏ qua chi tiết quan trọng, hai bên phải điều chỉnh qua lại nhiều lần.
 
-Câu hỏi của bài báo: **có thể gộp việc lập kế hoạch chuyển động và lực cho toàn thân vào một bộ MPC duy nhất, dùng mô hình động lực học đầy đủ, mà vẫn chạy real-time trên robot thật không?** Nhóm tác giả trả lời là có, ở 80 Hz.
+Kiến trúc phổ biến hiện nay gồm hai tầng: một MPC cấp cao dùng mô hình rút gọn (khối cứng đơn, SRB, hoặc mô hình centroidal) để lập kế hoạch, và một bộ điều khiển toàn thân (WBC) cấp thấp chuyển kế hoạch thành mô-men khớp. Cách tiếp cận này có ba nhược điểm. Thứ nhất, hai tầng phải được tinh chỉnh riêng và có thể mâu thuẫn nhau. Thứ hai, SRB giả định chân và tay không có khối lượng, giả định không còn đúng khi tay máy đủ nặng. Thứ ba, mô hình centroidal không đảm bảo tính khả thi ở mức khớp, nên kế hoạch có thể đòi hỏi mô-men không an toàn. MPC toàn thân ở mức mô-men đã được áp dụng cho bài toán chỉ di chuyển (locomotion), nhưng với loco-manipulation, công trình trước đó mới giải được offline do số chiều của bài toán tối ưu quá lớn.
 
-**Tóm lại:** robot cần điều phối tay và chân như người kéo vali, và bài báo muốn làm điều đó bằng một "bộ não" lập kế hoạch duy nhất, chạy đủ nhanh trên robot thật.
+Bài báo đặt câu hỏi: liệu có thể gộp lập kế hoạch chuyển động và lực cho toàn thân vào **một bộ MPC duy nhất** dùng động lực học bậc đầy đủ, mà vẫn chạy real-time trên robot thật? Câu trả lời của nhóm tác giả là có, ở 80 Hz.
 
-## 2. Vấn đề: kiến trúc phân tầng
+![Minh họa so sánh kiến trúc phân tầng và MPC toàn thân một tầng](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/minhhoa_kien_truc.png)
 
-**Ví dụ đời thường.** Hãy hình dung một công trường có hai người. Kỹ sư thiết kế (tầng trên) vẽ bản vẽ đơn giản hóa, coi toà nhà như một khối hộp. Đội thi công (tầng dưới) phải tự xoay xở biến bản vẽ đó thành từng viên gạch. Nếu bản vẽ bỏ qua chi tiết quan trọng, đội thi công có khi không làm nổi, và hai bên phải "chỉnh qua chỉnh lại" mãi.
+*Minh họa: bên trái là kiến trúc phân tầng truyền thống (MPC rút gọn, WBC, rồi PD); bên phải là cách tiếp cận của bài báo, trong đó một MPC toàn thân đưa lời giải thẳng xuống vòng PD mức khớp.*
+Minh họa: tác giả blog tự vẽ dựa trên mô tả trong bài báo.
 
-**Nói chính xác.** Cách làm phổ biến có hai tầng:
+**Tóm lại:** loco-manipulation đòi hỏi điều phối tay và chân như một thể thống nhất. Kiến trúc hai tầng nhanh nhưng dựa trên mô hình rút gọn thiếu chính xác, còn MPC toàn thân trước đây quá chậm để chạy real-time.
 
-1. **MPC cấp cao dùng mô hình rút gọn**: khối cứng đơn (Single Rigid Body, SRB) hoặc mô hình centroidal.
-2. **Bộ điều khiển toàn thân (Whole-Body Controller, WBC) cấp thấp** biến kế hoạch đó thành mô-men cho từng khớp.
+## 2. Ý tưởng cốt lõi: kiểm tra động lực học ngược thay vì mô phỏng động lực học thuận
 
-Kiến trúc này có ba điểm yếu:
+**Ví dụ.** Có hai cách giải Sudoku: điền thử một ô rồi lần theo hệ quả trên toàn bảng, hoặc đoán cùng lúc nhiều ô rồi chỉ kiểm tra tính hợp lệ của từng hàng, từng cột. Kiểm tra thường rẻ hơn nhiều so với lần theo hệ quả.
 
-- **Hai tầng phải tinh chỉnh riêng**, và có thể mâu thuẫn với nhau.
-- **SRB giả định chân và tay không có khối lượng**, điều sai khi tay máy đủ nặng.
-- **Mô hình centroidal không đảm bảo khả thi ở mức khớp**, nên kế hoạch có thể đòi mô-men không an toàn.
+Động lực học thuận (forward dynamics) trả lời câu hỏi "với mô-men này, robot sẽ có gia tốc bao nhiêu?". Theo Table I, dạng này đắt hơn và cho đồ thị tính toán lớn hơn (7764 so với 3818 lệnh cho mỗi ràng buộc). Bài báo thay vào đó dùng động lực học ngược (inverse dynamics): bộ tối ưu chọn đồng thời mô-men khớp, gia tốc và lực tiếp xúc, và chỉ yêu cầu bộ ba này thỏa mãn phương trình chuyển động tại mỗi thời điểm. Số biến tăng lên, nhưng mỗi ràng buộc trở nên rẻ hơn.
 
-MPC toàn thân ở mức mô-men đã chạy được cho bài toán chỉ đi bộ (locomotion). Với loco-manipulation, công trình trước đó mới giải được **offline**, vì bài toán tối ưu có quá nhiều chiều.
+**Ví dụ.** Thân robot giống một chiếc thuyền trên mặt nước: không có động cơ nào tác động trực tiếp lên nó, và nó chỉ chuyển động nhờ lực đạp của chân xuống đất và lực của tay lên vật.
 
-**Tóm lại:** chia việc cho "kỹ sư vẽ phác" và "đội thi công" thì nhanh, nhưng bản phác bỏ qua khối lượng của tay chân và giới hạn của từng khớp. Gộp hết vào một tầng thì chính xác hơn, nhưng trước đây lại quá chậm để chạy thật.
-
-## 3. Ý tưởng cốt lõi: thay vì "dự đoán", hãy "kiểm tra"
-
-**Ví dụ đời thường.** Có hai cách giải một ô Sudoku. Cách một: thử điền một số, rồi lần theo hệ quả xem cả bảng biến đổi ra sao (đây là "dự đoán"). Cách hai: đoán cùng lúc vài ô, rồi chỉ **kiểm tra** từng hàng, từng cột có hợp lệ không. Kiểm tra thì dễ và nhanh hơn nhiều so với lần theo hệ quả.
-
-**Nói chính xác.** Động lực học **thuận** (forward dynamics) hỏi: "với mô-men này, robot sẽ có gia tốc bao nhiêu?". Theo Table I, dạng này đắt hơn và cho đồ thị tính toán lớn hơn (7764 so với 3818 lệnh cho mỗi ràng buộc). Bài báo dùng động lực học **ngược** (inverse dynamics): để bộ tối ưu **tự chọn cùng lúc** mô-men khớp, gia tốc và lực tiếp xúc, rồi chỉ yêu cầu bộ ba này **thỏa mãn phương trình chuyển động** tại mỗi thời điểm. Có nhiều biến hơn, nhưng mỗi ràng buộc lại "rẻ" hơn.
-
-**Tóm lại:** đừng bắt máy tính mô phỏng trước robot sẽ làm gì. Hãy để nó đoán cả mô-men, gia tốc và lực, rồi kiểm tra xem chúng có khớp định luật Newton không.
-
-## 4. Phương pháp chi tiết
-
-### 4.1. Mô hình robot
-
-**Ví dụ đời thường.** Thân robot giống một chiếc thuyền trôi trên mặt nước: không có động cơ nào gắn trực tiếp vào "nước" để đẩy thân đi. Muốn thân di chuyển, robot chỉ có thể đạp chân xuống đất và dùng tay đẩy vào vật.
-
-**Nói chính xác.** Robot được mô hình là hệ *floating-base*, với $q$ gồm vị trí base, quaternion base và góc các khớp. Phương trình chuyển động (Eq. 2 trong bài báo):
+Robot được mô hình là hệ *floating-base*, với $q$ gồm vị trí base, quaternion base và góc khớp. Phương trình chuyển động (Eq. 2 trong bài báo) là
 
 $$
-M(q)\,a + b(q, v) = \begin{bmatrix} 0_{6\times1} \\ \tau_j \end{bmatrix} + J_c^\top F_c
+M(q)\,a + b(q, v) = \begin{bmatrix} 0_{6\times1} \\ \tau_j \end{bmatrix} + J_c^\top F_c ,
 $$
 
-Ở đây $M$ là ma trận quán tính, $b$ gộp các lực Coriolis/ly tâm và trọng lực, $\tau_j$ là mô-men khớp, $F_c \in \mathbb{R}^{18}$ gộp lực tại 4 bàn chân và lực/mô-men tại tay. Khối $0_{6\times1}$ chính là "chiếc thuyền": 6 bậc tự do của base không có động cơ tác động trực tiếp.
-
-Trạng thái và đầu vào của MPC:
+trong đó $M$ là ma trận quán tính, $b$ gộp các số hạng Coriolis/ly tâm và trọng lực, $\tau_j$ là mô-men khớp, và $F_c \in \mathbb{R}^{18}$ gộp lực tại bốn bàn chân cùng lực/mô-men tại tay. Khối $0_{6\times1}$ biểu diễn sáu bậc tự do không được dẫn động của base. Trạng thái và đầu vào của MPC là
 
 $$
-x = [q,\ v], \qquad u = [\tau_j,\ a,\ F_c]
+x = [q,\ v], \qquad u = [\tau_j,\ a,\ F_c],
 $$
 
-**Tóm lại:** thân robot chỉ chuyển động được nhờ lực từ chân và tay, và điểm mấu chốt là MPC coi cả gia tốc $a$ lẫn lực $F_c$ là biến để chọn, chứ không chỉ mô-men.
+tức là gia tốc $a$ và lực $F_c$ cũng là biến quyết định, không chỉ mô-men.
 
-### 4.2. Động lực học ngược làm "ràng buộc đường đi"
+**Ví dụ.** Thay vì một thanh tra theo dõi cả dây chuyền để dự đoán sản phẩm cuối, mỗi trạm có một người kiểm tra tại chỗ xem mọi thứ có khớp nhau không.
 
-**Ví dụ đời thường.** Thay vì một thanh tra đi theo cả dây chuyền để dự đoán sản phẩm cuối, mỗi trạm trên dây chuyền có một người kiểm tra tại chỗ: "ở trạm này, mọi thứ có khớp nhau không?". Mỗi lần kiểm tra nhỏ, độc lập, nên nhanh.
-
-**Nói chính xác.** Phần động học được tích phân bằng Euler hiện trên số gia $\delta q$ trong không gian tiếp tuyến, tránh được ràng buộc chuẩn hóa quaternion. Phần động lực học được áp như một **ràng buộc đường đi (path constraint)** tại mỗi nút $k$, tính bằng thuật toán RNEA (Recursive Newton-Euler), đúng như Eq. 5 của bài báo:
+Phần động học được tích phân bằng Euler hiện trên số gia $\delta q$ trong không gian tiếp tuyến, nhờ đó tránh được ràng buộc chuẩn hóa quaternion. Phần động lực học được áp như một **ràng buộc đường đi (path constraint)** tại mỗi nút $k$, tính bằng thuật toán RNEA (Recursive Newton-Euler), theo đúng Eq. 5 của bài báo:
 
 $$
 \begin{bmatrix} 0_{6\times1} \\ \tau_{j,k} \end{bmatrix} = f_{\mathrm{RNEA}}(q_k, v_k, a_k, F_{c,k})
 $$
 
-Dạng này tương đương với $M(q_k)a_k + b(q_k,v_k) - J_c^\top(q_k)F_{c,k}$. RNEA rất "rẻ", nên đồ thị tính toán của ràng buộc nhỏ, và solver tận dụng được cấu trúc này.
+Dạng này tương đương với $M(q_k)a_k + b(q_k,v_k) - J_c^\top(q_k)F_{c,k}$. Vì RNEA có chi phí tính toán thấp, đồ thị tính toán của ràng buộc nhỏ và solver khai thác được cấu trúc theo từng nút.
 
-**Tóm lại:** ở mỗi nút thời gian có một "trạm kiểm tra Newton" nhỏ và rẻ, thay vì một phép mô phỏng nặng nề.
+**Tóm lại:** thay vì mô phỏng trước robot sẽ làm gì, MPC chọn cùng lúc mô-men, gia tốc và lực, rồi kiểm tra chúng bằng một ràng buộc Newton rẻ tại từng nút thời gian.
 
-### 4.3. Chi phí, tiếp xúc và tay máy
+## 3. Thiết kế bài toán tối ưu: chi phí, tiếp xúc, giới hạn và bước thời gian
 
-**Ví dụ đời thường.** Khi bước đi, bàn chân đang chạm đất thì không được trượt, còn bàn chân đang nhấc lên thì không chịu lực. Bạn không cần ai chỉ chỗ đặt chân, cơ thể tự tìm chỗ hợp lý.
+**Ví dụ.** Khi bước đi, bàn chân đang chạm đất không được trượt, còn bàn chân đang nhấc lên không chịu lực; không ai phải chỉ cho ta chỗ đặt chân.
 
-**Nói chính xác.**
+Hàm chi phí bậc hai phạt độ lệch khỏi tư thế danh định và khỏi vận tốc base được ra lệnh, điều chuẩn $a$ và $\tau$ về 0, và khuyến khích lực chia đều trên các chân đang chống. Tiếp xúc tuân theo một lịch dáng đi (gait) cố định. Với chân chống, lực pháp tuyến không âm, nằm trong nón ma sát và vận tốc bàn chân bằng 0. Với chân swing, lực bằng 0 và độ cao bám theo spline bậc ba. Vận tốc ngang của bàn chân được để tự do, nên **MPC tự xác định vị trí đặt chân**. Với tay, lực và vận tốc end-effector bám theo lệnh người dùng; vật thể không được mô hình hóa.
 
-- **Hàm chi phí bậc hai:** phạt độ lệch khỏi tư thế danh định, độ lệch khỏi vận tốc base được ra lệnh, điều chuẩn $a$ và $\tau$ về 0, và khuyến khích lực chia đều trên các chân đang chống.
-- **Tiếp xúc theo lịch dáng đi (gait) cố định.** Chân chống: lực pháp tuyến không âm, nằm trong nón ma sát, vận tốc bàn chân bằng 0. Chân swing: lực bằng 0, độ cao bám theo spline bậc ba. Vận tốc ngang để tự do, nên **MPC tự quyết vị trí đặt chân**.
-- **Tay:** lực và vận tốc end-effector bám theo lệnh người dùng. Vật thể không được mô hình hóa.
+**Ví dụ.** Khi lên kế hoạch cho cả tuần, ta chỉ cần chi tiết vài giờ tới, vì kế hoạch cho các ngày sau sẽ được lập lại.
 
-**Tóm lại:** quy tắc "chân chạm đất không trượt, chân nhấc lên không chịu lực" được viết thành ràng buộc, còn chỗ đặt chân thì MPC tự tính.
+Giới hạn vị trí và vận tốc khớp được áp cho mọi nút. Giới hạn mô-men chỉ áp cho $k \le 2$ (bài báo viết "first 2 time steps"), vì mô-men gửi xuống robot chỉ được nội suy tới $k = 2$. Sau nút này, $\tau$ được loại khỏi biến quyết định, và tính khả thi động lực học vẫn được đảm bảo nhờ **sáu hàng đầu** của ràng buộc RNEA (phần $0_{6\times1}$).
 
-### 4.4. Giới hạn mô-men chỉ ở đầu horizon
+**Ví dụ.** Khi lái xe, ta quan sát kỹ đoạn đường ngay phía trước và chỉ liếc qua đoạn đường xa.
 
-**Ví dụ đời thường.** Khi lên lịch cho cả tuần, bạn chỉ cần chi tiết từng phút cho vài giờ tới, vì đó là việc sắp làm thật. Các ngày sau chỉ cần đại khái, đằng nào ngày mai bạn cũng lập lại kế hoạch.
-
-**Nói chính xác.** Giới hạn vị trí và vận tốc khớp áp cho mọi nút. Giới hạn mô-men chỉ áp cho $k \le 2$ (bài báo viết "first 2 time steps"), vì mô-men gửi xuống robot chỉ được nội suy tới $k = 2$. Sau nút đó, $\tau$ được bỏ hẳn khỏi biến quyết định, và tính khả thi động lực học vẫn được giữ nhờ **6 hàng đầu** của ràng buộc RNEA (phần $0_{6\times1}$).
-
-**Tóm lại:** chỉ kiểm giới hạn mô-men ở đoạn sắp thực thi, còn phần sau vẫn tuân thủ vật lý nhờ 6 phương trình của base.
-
-### 4.5. Bước thời gian thích nghi
-
-**Ví dụ đời thường.** Khi lái xe, bạn nhìn rất kỹ vài mét trước mũi xe, còn đoạn đường xa chỉ cần liếc qua.
-
-**Nói chính xác.** Bước thời gian dày ở đầu horizon và thưa dần về cuối:
+Bước thời gian được chọn dày ở đầu horizon và thưa dần về cuối:
 
 $$
-\delta t_k = \gamma^k\, \delta t_0, \qquad \gamma > 1
+\delta t_k = \gamma^k\, \delta t_0, \qquad \gamma > 1 .
 $$
 
-**Tóm lại:** nhìn kỹ chỗ gần, nhìn thoáng chỗ xa, để cùng một số nút mà thấy được xa hơn.
+**Tóm lại:** các quy tắc tiếp xúc được viết thành ràng buộc, vị trí đặt chân do MPC tự tìm, giới hạn mô-men chỉ kiểm tra ở đoạn sắp thực thi, và bước thời gian thích nghi giúp nhìn xa hơn với cùng số nút.
 
-### 4.6. Solver và các mẹo tăng tốc
+## 4. Từ lời giải đến robot: solver khai thác cấu trúc và pipeline không cần WBC
 
-**Ví dụ đời thường.** Một thủ thư giỏi không lục cả thư viện, vì biết sách xếp theo kệ nên chỉ đi dọc từng kệ. Hôm sau, họ bắt đầu từ chỗ đã tìm hôm qua thay vì từ đầu.
+**Ví dụ.** Một thủ thư giỏi biết sách được xếp theo kệ nên chỉ đi dọc từng kệ, và hôm sau bắt đầu tìm từ chỗ đã dừng hôm trước.
 
-**Nói chính xác.**
-
-- **Fatrop:** solver interior-point khai thác cấu trúc thưa theo khối (từng nút thời gian) bằng Riccati recursion, dùng Hessian chính xác, có lúc chỉ cần 3 vòng lặp mỗi lần giải. Fatrop **nhanh hơn IPOPT hơn 10×**.
-- **Warm-start** từ lời giải bước trước, có khởi tạo lại lực tiếp xúc bằng cách chia đều trọng lượng cho các chân chống: giảm thời gian giải **15%–20%**.
-- **Sinh mã C** (qua Pinocchio + CasADi) thành shared library: tăng tốc **2–2.5×**.
-
-**Tóm lại:** solver "biết" bài toán xếp theo từng nút thời gian, bắt đầu từ lời giải cũ, và được biên dịch sẵn, nên đủ nhanh cho real-time.
-
-### 4.7. Pipeline trên robot thật
+Solver được dùng là **Fatrop**, một solver interior-point khai thác cấu trúc thưa theo khối (theo từng nút thời gian) bằng Riccati recursion và dùng Hessian chính xác; có lúc chỉ cần 3 vòng lặp mỗi lần giải. Fatrop **nhanh hơn IPOPT hơn 10×**. Warm-start từ lời giải bước trước, kết hợp khởi tạo lại lực tiếp xúc bằng cách chia đều trọng lượng cho các chân chống, giảm thời gian giải **15%–20%**. Sinh mã C (qua Pinocchio + CasADi) thành shared library tăng tốc thêm **2–2.5×**.
 
 ![Sơ đồ pipeline MPC động lực học ngược toàn thân](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig2_pipeline.png)
 
 *MPC (80 Hz) nhận lệnh base/tay, lịch gait và trạng thái từ bộ ước lượng (500 Hz), xuất quỹ đạo τ\*, q\*, v\*; quỹ đạo được nội suy ở 500 Hz thành q_des, v_des, τ_ff rồi vào vòng PD mức khớp, không qua WBC.*
 Nguồn: Hình 2, arXiv 2511.19709
 
-**Ví dụ đời thường.** Nhạc trưởng (MPC) viết sẵn từng nốt cho từng nhạc công, nên nhạc công (vòng PD) chỉ cần chơi theo và chỉnh nhẹ khi lệch, không cần thêm một "phó nhạc trưởng" (WBC) ở giữa.
+**Ví dụ.** Một nhạc trưởng viết sẵn từng nốt cho từng nhạc công, nên nhạc công chỉ cần chơi theo và chỉnh nhẹ khi lệch, không cần thêm một "phó nhạc trưởng" ở giữa.
 
-**Nói chính xác.** Robot là **Unitree B2** (khoảng 70 kg, 12 khớp) gắn tay **Z1** (4.5 kg, 6 khớp, khóa 2 khớp cuối), cho mô hình 22 bậc tự do. MPC chạy **80 Hz** trên CPU AMD Ryzen 9 9950X. Lời giải được nội suy tuyến tính lên 500 Hz rồi đưa vào vòng PD (Eq. 10):
+Hệ thống thử nghiệm gồm **Unitree B2** (khoảng 70 kg, 12 khớp) gắn tay **Z1** (4.5 kg, 6 khớp, khóa 2 khớp cuối), cho mô hình 22 bậc tự do. MPC chạy ở **80 Hz** trên CPU AMD Ryzen 9 9950X. Lời giải được nội suy tuyến tính lên 500 Hz và đưa vào vòng PD (Eq. 10):
 
 $$
-\tau_{\text{motor}} = \tau_{\text{ff}} + K_p (q_{\text{des}} - q) + K_d (v_{\text{des}} - v)
+\tau_{\text{motor}} = \tau_{\text{ff}} + K_p (q_{\text{des}} - q) + K_d (v_{\text{des}} - v) .
 $$
 
-**Tóm lại:** chỉ còn hai thứ: một MPC duy nhất và một vòng PD đơn giản ở từng khớp. Tầng WBC đã biến mất.
+**Tóm lại:** nhờ solver khai thác cấu trúc, warm-start và sinh mã, MPC đủ nhanh để đưa lời giải thẳng xuống vòng PD; tầng WBC bị loại bỏ hoàn toàn.
 
-## 5. Thí nghiệm và kết quả
+## 5. Kết quả mô phỏng: nhanh hơn dù nhiều biến hơn, vững khi bị nhiễu
 
-### 5.1. Nhiều biến hơn mà lại nhanh hơn
+**Ví dụ.** Một bài kiểm tra 100 câu trắc nghiệm ngắn có thể làm xong nhanh hơn 50 câu tự luận dài.
 
-**Ví dụ đời thường.** Một bài kiểm tra 100 câu trắc nghiệm ngắn có thể làm xong nhanh hơn 50 câu tự luận dài. Số câu nhiều hơn không có nghĩa là khó hơn.
-
-**Nói chính xác.** Nhóm tác giả so sánh các cách viết mô hình (15 nút, horizon 0.56 s, tức 70% chu kỳ gait), thời gian giải trung bình (độ lệch chuẩn):
+Nhóm tác giả so sánh các cách viết mô hình với 15 nút, horizon 0.56 s (70% chu kỳ gait); thời gian giải được ghi dưới dạng trung bình (độ lệch chuẩn):
 
 | Mô hình | Path constraint | Số lệnh/ràng buộc | Biến quyết định | Trước biên dịch (ms) | Sau biên dịch (ms) |
 |---|---|---|---|---|---|
@@ -171,33 +128,29 @@ $$
 
 Nguồn: Table I, arXiv 2511.19709
 
-Phương pháp đề xuất có **nhiều biến nhất nhưng giải nhanh nhất**: ràng buộc RNEA cần ít lệnh nhất (3818, so với 7764 của forward dynamics), và Fatrop chạy tốt hẳn khi động lực học được viết dạng path constraint.
-
-**Tóm lại:** 12.5 ms mỗi lần giải, đủ cho 80 Hz. Cái quyết định tốc độ là độ "rẻ" của từng ràng buộc, không phải số biến.
-
-### 5.2. Mô phỏng: phối hợp toàn thân và chống nhiễu
+Phương pháp đề xuất có **nhiều biến nhất nhưng giải nhanh nhất**, vì ràng buộc RNEA cần ít lệnh nhất và Fatrop hoạt động tốt hơn hẳn khi động lực học được viết dưới dạng path constraint.
 
 ![Robot tự hạ/nâng thân để bám quỹ đạo tay khi trot](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig3_arm_tracking.png)
 
 *Phối hợp toàn thân: khi đang trot, MPC tự hạ hoặc nâng thân để tay với tới mục tiêu thấp và cao.*
 Nguồn: Hình 3, arXiv 2511.19709
 
-**Ví dụ đời thường.** Bạn đang đi thì có người xô ngang vai. Bạn không ngã, vì chân tự bước sang một bên để đỡ, mà tay vẫn cầm chắc cốc cà phê.
+**Ví dụ.** Bị xô ngang vai khi đang đi, ta tự bước sang một bên để đỡ mà tay vẫn giữ chắc cốc cà phê.
 
-**Nói chính xác.**
-
-- **Chỉ dùng mô-men feed-forward** ($K_p = K_d = 0$, khi chưa tính trễ tính toán): robot trot về phía trước ở **0.2 m/s** trong khi bám quỹ đạo tay, tự hạ/nâng thân để với tới mục tiêu.
-- **Chống nhiễu:** khi trot tại chỗ, **vận tốc ngang của base bị nhiễu 0.8 m/s** (đây là nhiễu vận tốc, không phải lực đẩy). MPC ổn định lại, tay vẫn bám tốt, mô-men luôn trong giới hạn; có lần khớp bắp chân sau trái chạm đúng giới hạn **320 N·m**. Phản ứng phụ thuộc pha gait: ở lần nhiễu thứ hai, chân sau phải đổi vị trí đặt chân khá nhiều.
-- **Có tính trễ tính toán:** cần $K_d \approx 5$. Bước thời gian thích nghi (10–100 ms) cho độ trôi base **0.4 cm/s**, so với **1.2 cm/s** khi dùng bước cố định 40 ms trên cùng horizon.
+Khi chưa tính trễ tính toán và chỉ dùng mô-men feed-forward ($K_p = K_d = 0$), robot trot về phía trước ở **0.2 m/s** trong khi bám quỹ đạo tay, đồng thời tự hạ/nâng thân để với tới mục tiêu. Khi trot tại chỗ, **vận tốc ngang của base bị nhiễu 0.8 m/s** (nhiễu vận tốc, không phải lực đẩy): MPC ổn định lại hệ, tay vẫn bám tốt và mô-men luôn trong giới hạn, có lần khớp bắp chân sau trái chạm đúng giới hạn **320 N·m**. Phản ứng phụ thuộc pha gait; ở lần nhiễu thứ hai, chân sau phải thay đổi vị trí đặt chân đáng kể. Khi tính đến trễ tính toán, cần $K_d \approx 5$; bước thời gian thích nghi (10–100 ms) cho độ trôi base **0.4 cm/s**, so với **1.2 cm/s** khi dùng bước cố định 40 ms trên cùng horizon.
 
 ![Chống nhiễu vận tốc ngang 0.8 m/s](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig4_base_disturbance.png)
 
 *Chống nhiễu: vận tốc ngang của base bị nhiễu 0.8 m/s khi trot tại chỗ. Đồ thị cho thấy vận tốc ngang của end-effector và base, cùng mô-men khớp bắp chân hai chân sau (RL và RR).*
 Nguồn: Hình 4, arXiv 2511.19709
 
-**Tóm lại:** trong mô phỏng, chỉ riêng mô-men MPC tính ra đã đủ cho robot vừa đi vừa bám tay, và bị xô vẫn đứng vững mà không vượt giới hạn mô-men.
+**Tóm lại:** với 12.5 ms mỗi lần giải, MPC đủ nhanh cho 80 Hz; trong mô phỏng, riêng mô-men MPC tính ra đã đủ để robot vừa đi vừa bám tay và chống nhiễu mà không vượt giới hạn mô-men.
 
-### 5.3. Phần cứng: tay 3–5 kg kéo 10 kg
+## 6. Phần cứng và bài học sim-to-real
+
+**Ví dụ.** Người bê vật nặng bằng cả cơ thể, dồn trọng tâm và trụ chân, bê được nhiều hơn người chỉ dùng sức cánh tay.
+
+Trên robot thật, cần $K_d \approx 20$ để tránh dao động động cơ tần số cao. Các chân **không cần $K_p$**, cho thấy mô-men do MPC tính ra đã đủ tốt; riêng tay cần thêm một thành phần P nhỏ do cảm biến khớp nhiễu. Robot **kéo được tải 10 kg** khi đứng và khi đi, trong khi tải định danh của tay Z1 chỉ **3–5 kg**. Mô phỏng cho thấy có thể kéo tới **14 kg**, nhưng trên phần cứng, khớp tay thứ 3 bị quá nhiệt. Các demo khác gồm đẩy hộp vào tường khi trot tại chỗ, lau bảng trắng và tương tác mềm với người.
 
 ![Kéo tải 10 kg khi đang đi](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig5_walking_pulling.png)
 
@@ -209,62 +162,36 @@ Nguồn: Hình 5, arXiv 2511.19709
 *Lau bảng trắng chính xác (ảnh phải của Hình 5).*
 Nguồn: Hình 5, arXiv 2511.19709
 
-**Ví dụ đời thường.** Một người bê đồ nặng bằng cả cơ thể (dồn trọng tâm, trụ chân) sẽ bê được nhiều hơn người chỉ dùng sức cánh tay.
+**Ví dụ.** Tập đi trên sàn phẳng trong nhà rồi mới ra đường, ta có thể phát hiện đôi giày mới bị lệch đế; nếu không sửa, ta sẽ luôn bị ngả về sau.
 
-**Nói chính xác.**
-
-- Trên robot thật cần $K_d \approx 20$ để tránh dao động động cơ tần số cao. Chân **không cần $K_p$**, cho thấy mô-men MPC đã đủ tốt. Tay cần thêm một chút P vì cảm biến khớp nhiễu.
-- **Kéo tải 10 kg** khi đứng và khi đi, trong khi tải định danh của tay Z1 chỉ **3–5 kg**. Mô phỏng kéo được tới **14 kg**, nhưng ngoài đời khớp tay thứ 3 bị quá nhiệt.
-- Các demo khác: đẩy hộp vào tường khi trot tại chỗ, lau bảng trắng, tương tác mềm với người.
-
-**Tóm lại:** nhờ dùng cả thân, cánh tay 3–5 kg kéo được 10 kg trên robot thật. Giới hạn lúc này là nhiệt độ của động cơ tay, không phải bộ điều khiển.
-
-### 5.4. Bài học sim-to-real
+Thời gian giải trên phần cứng dao động nhiều hơn, có lúc lên tới **20 ms**, so với trung bình **12.5 ms** trong mô phỏng. Ở khớp bắp chân sau trái (Hình 6), phần cứng xuất hiện **đỉnh vận tốc do chân chạm đất trễ** so với lịch gait. Ngoài ra, URDF đặt CoM của base cách tâm hình học không quá 1 cm, nhưng đo thực tế cho thấy **trọng lượng lệch về phía sau khoảng 60%**. Sau khi hiệu chỉnh offset CoM và mục tiêu lực tiếp xúc, hiện tượng ngả về sau giảm rõ rệt, và mọi kết quả trong bài báo đều dùng phiên bản đã hiệu chỉnh này.
 
 ![So sánh mô phỏng và phần cứng ở khớp bắp chân sau trái](/images/MPC-Dong-Luc-Hoc-Nguoc-Toan-Than/fig6_sim_vs_hw.png)
 
 *Mô-men và vận tốc của khớp bắp chân sau trái khi trot: (a) mô phỏng, bên trái; (b) phần cứng, bên phải.*
 Nguồn: Hình 6, arXiv 2511.19709
 
-**Ví dụ đời thường.** Bạn tập đi trên sàn phẳng trong nhà, rồi ra đường mới phát hiện đôi giày mới hơi lệch đế. Không sửa đôi giày thì đi mãi vẫn thấy ngả về sau.
+**Tóm lại:** nhờ huy động cả thân, cánh tay 3–5 kg kéo được 10 kg trên robot thật, với giới hạn nằm ở nhiệt độ động cơ tay; đồng thời, sai lệch mô hình khối lượng cho thấy system identification là bước không thể bỏ qua.
 
-**Nói chính xác.**
+## 7. Hạn chế: bộ điều khiển chưa "nhìn thấy" vật thể và còn phụ thuộc mô hình
 
-- Thời gian giải trên phần cứng dao động nhiều hơn, có lúc lên tới **20 ms** (trung bình trong mô phỏng là 12.5 ms).
-- Ở khớp bắp chân sau trái (Hình 6), phần cứng có **đỉnh vận tốc do chân chạm đất trễ** so với lịch gait.
-- URDF đặt CoM của base cách tâm hình học không quá 1 cm, nhưng đo thực tế thấy **trọng lượng lệch về phía sau khoảng 60%**. Sau khi sửa offset CoM và mục tiêu lực tiếp xúc, robot ngả về sau ít hẳn, và mọi kết quả trong bài báo đều dùng bản đã sửa.
+**Ví dụ.** Một tài xế biết mình đang kéo mạnh cỡ nào nhưng không nhìn thấy thùng hàng phía sau sẽ trượt ra sao.
 
-**Tóm lại:** mô hình chỉ tốt bằng dữ liệu nạp vào nó. Một sai lệch khối lượng trong URDF đủ để robot ngả về sau, nên system identification là bắt buộc.
+Lực và vận tốc tay là lệnh từ bên ngoài; vật thể không được mô hình hóa, nên MPC không suy luận được phản ứng của vật. Lực thực tế tác dụng lên vật chưa được đo (do thiếu thiết bị), nên việc bám lực chưa được kiểm chứng. Lịch gait là cố định và chưa có ràng buộc tránh va chạm (cả thân robot lẫn tay). Mô hình bỏ qua ma sát động cơ và quán tính rotor, thời điểm tiếp xúc giữa mô phỏng và thực tế không khớp, và mô hình khối lượng sai lệch đòi hỏi system identification bài bản hơn. Giới hạn mô-men chỉ áp cho $k \le 2$, chỉ 4/6 khớp tay được sử dụng, và MPC chạy off-board trên CPU desktop mạnh. Tải bị giới hạn bởi nhiệt của khớp tay, thời gian giải trên phần cứng biến động, chưa có so sánh với SQP, và kết quả phần cứng chủ yếu mang tính định tính.
 
-## 6. Hạn chế
+**Tóm lại:** bộ điều khiển mạnh về phía robot nhưng chưa mô hình hóa vật thể, chưa đo lực thực, và vẫn cần một máy tính mạnh đặt ngoài robot.
 
-**Ví dụ đời thường.** Một tài xế giỏi nhưng bị bịt mắt về hàng hóa phía sau: họ biết mình đang kéo mạnh cỡ nào, nhưng không biết thùng hàng sẽ trượt ra sao.
+## 8. Điểm rút ra: một tầng thay hai tầng, với công cụ mở
 
-**Nói chính xác.**
+**Ví dụ.** Đây giống một công thức nấu ăn tốt với nguyên liệu mua được ở chợ: không cần dụng cụ đắt tiền, chỉ cần làm đúng trình tự.
 
-- Lực và vận tốc tay là **lệnh từ bên ngoài**. Vật thể không được mô hình hóa, nên MPC không suy luận được vật sẽ phản ứng thế nào.
-- **Chưa đo lực thực tế** tác dụng lên vật (thiếu thiết bị), nên việc bám lực chưa được kiểm chứng.
-- Lịch gait cố định. Chưa có ràng buộc tránh va chạm (cả thân robot lẫn tay).
-- Mô hình bỏ qua ma sát động cơ và quán tính rotor. Thời điểm tiếp xúc giữa mô phỏng và thực tế không khớp. Mô hình khối lượng sai lệch, cần system identification bài bản hơn.
-- Giới hạn mô-men chỉ áp cho $k \le 2$. Chỉ dùng 4/6 khớp tay. MPC chạy off-board trên CPU desktop mạnh.
-- Tải bị giới hạn bởi nhiệt của khớp tay. Thời gian giải trên phần cứng biến động.
-- Chưa so sánh với SQP. Kết quả phần cứng chủ yếu là định tính.
-
-**Tóm lại:** bộ điều khiển rất mạnh về phía robot, nhưng còn "mù" về vật thể, chưa đo được lực thật, và vẫn cần một máy tính mạnh đặt ngoài robot.
-
-## 7. Điểm rút ra
-
-**Ví dụ đời thường.** Đây giống một công thức nấu ăn hay mà nguyên liệu mua được ở chợ: không cần dụng cụ đắt tiền, chỉ cần làm đúng thứ tự.
-
-**Nói chính xác.**
-
-1. **Một tầng thay hai tầng:** MPC toàn thân mức mô-men chạy real-time, đưa thẳng xuống PD, không cần WBC.
+1. **Một tầng thay hai tầng:** MPC toàn thân mức mô-men chạy real-time và đưa lời giải thẳng xuống PD, không cần WBC.
 2. **Cách viết bài toán quan trọng ngang mô hình:** động lực học ngược dạng path constraint nhanh hơn cả forward dynamics lẫn centroidal, dù có nhiều biến hơn (Table I).
-3. **Mẹo dùng được ngay:** bước thời gian thích nghi, Fatrop + warm-start + sinh mã, chỉ giới hạn mô-men ở các nút đầu.
-4. **Rào cản thấp:** chỉ dùng công cụ mở (Pinocchio, CasADi, Fatrop), có code công khai, chạy trên phần cứng Unitree thương mại và một CPU desktop, không cần GPU hay dữ liệu lớn. Đây là một baseline model-based tốt cho các lab có Go2/B2 + Z1.
-5. **Hướng tương lai:** kết hợp RL (bền vững với sai số mô hình nhờ domain randomization) với MPC (lập kế hoạch cả lực lẫn chuyển động, có ràng buộc an toàn).
+3. **Kỹ thuật dùng được ngay:** bước thời gian thích nghi; Fatrop kết hợp warm-start và sinh mã; chỉ giới hạn mô-men ở các nút đầu.
+4. **Rào cản thấp:** chỉ dùng công cụ mở (Pinocchio, CasADi, Fatrop), có code công khai, chạy trên phần cứng Unitree thương mại và một CPU desktop, không cần GPU hay dữ liệu lớn; đây là baseline model-based tốt cho các lab có Go2/B2 + Z1.
+5. **Hướng tiếp theo:** kết hợp RL (bền vững với sai số mô hình nhờ domain randomization) với MPC (lập kế hoạch cả lực lẫn chuyển động, có ràng buộc an toàn).
 
-**Tóm lại:** nếu phải kể trong một câu: *hãy để một bộ MPC duy nhất đoán cả mô-men, gia tốc và lực, rồi chỉ kiểm tra chúng bằng định luật Newton, vừa chính xác hơn mà lại nhanh hơn*.
+**Tóm lại:** để một MPC duy nhất chọn cùng lúc mô-men, gia tốc và lực, rồi kiểm tra chúng bằng định luật Newton tại từng nút, vừa chính xác hơn vừa nhanh hơn kiến trúc phân tầng.
 
 ## Tham khảo
 

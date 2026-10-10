@@ -15,10 +15,11 @@ export class CopyCodeButton extends LitElement {
         width: fit-content;
         margin: 0;
         padding: 0.5rem;
-        background: #e2e8f022;
-        border: none;
+        background: var(--color-code-bg);
+        border: 1px solid var(--color-border);
         border-radius: 0.25rem;
-        color: #fff;
+        color: var(--color-ink);
+        font-family: var(--font-family-ui);
         cursor: pointer;
         font-weight: 600;
         /* font-size: var(--step--2); */

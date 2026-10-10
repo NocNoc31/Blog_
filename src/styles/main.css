@@ -224,13 +224,20 @@ main.flow {
 }
 
 .post-content__content table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   border-top: 1px solid color-mix(in srgb, var(--theme-on-background) 45%, transparent);
   border-bottom: 1px solid color-mix(in srgb, var(--theme-on-background) 45%, transparent);
   font-variant-numeric: tabular-nums;
   caption-side: top;
+}
+
+.post-content__content table.post-table {
+  width: max-content;
+  min-width: 100%;
+  max-width: none;
+  font-size: 0.88em;
 }
 
 .post-content__content caption {
@@ -242,12 +249,16 @@ main.flow {
   margin-bottom: 0.5em;
 }
 
+.table-scroll {
+  container-type: inline-size;
+}
+
 .table-scroll caption {
   position: sticky;
   left: 0;
-  width: max-content;
-  max-width: 100%;
-  text-align: left;
+  width: 100cqi;
+  max-width: 100cqi;
+  box-sizing: border-box;
 }
 
 .post-content__content th,
@@ -255,7 +266,17 @@ main.flow {
   border: 0;
   padding: 0.4rem 0.7rem;
   text-align: center;
+  white-space: normal;
+}
+
+.post-table th,
+.post-table td {
   white-space: nowrap;
+  padding: 0.3rem 0.4rem;
+}
+
+.post-table thead th:not([colspan]):not([rowspan]) {
+  white-space: normal;
 }
 
 .post-content__content thead th {
@@ -281,10 +302,10 @@ main.flow {
 
 .table-scroll tbody th:first-child,
 .table-scroll tbody td:first-child,
-.table-scroll thead th[rowspan] {
+.table-scroll thead tr:first-child > th:first-child {
   position: sticky;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   background: var(--theme-background);
 }
 
@@ -292,10 +313,8 @@ main.flow {
   background: color-mix(in srgb, var(--theme-on-background) 5%, var(--theme-background));
 }
 
-.table-scroll .post-table--split tbody th[scope='row'] {
-  position: static;
-  text-align: left;
-  font-weight: 500;
+.post-table thead tr:first-child th[colspan] {
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-on-background) 28%, transparent);
 }
 
 .post-content__content tbody tr.is-mean {
@@ -312,6 +331,18 @@ main.flow {
   font-style: italic;
   color: #666;
   margin-top: 0.4em;
+}
+
+@media (min-width: 800px) {
+  .post-content__content table.post-table {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+  }
+
+  .post-table thead th:not([colspan]):not([rowspan]) {
+    overflow-wrap: anywhere;
+  }
 }
 
 /* Gloal fade in animation */

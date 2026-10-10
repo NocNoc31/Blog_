@@ -91,58 +91,87 @@ Nguồn: Hình 4, arXiv 2610.12470
 Các số liệu của Hình 4 (thứ tự Do as I Do / CHORD / Dex-One2Many, đơn vị %):
 
 <div class="table-scroll">
-<table class="post-table post-table--split">
-<caption>Nguồn: Bảng 1. Hình 4, arXiv 2610.12470</caption>
+<table class="post-table">
+<caption>Bảng 1. Mô phỏng (Nguồn: Hình 4, arXiv 2610.12470)</caption>
 <thead>
 <tr>
-<th rowspan="2" colspan="2"></th>
-<th colspan="3">Doll</th>
-<th colspan="3">Can</th>
-<th colspan="3">Stamp</th>
-<th colspan="3">Hammer</th>
-<th colspan="3">Sweep</th>
+<th rowspan="2">Nhiệm vụ</th>
+<th colspan="3">Seen</th>
+<th colspan="3">Unseen</th>
 </tr>
 <tr>
-<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
-<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
-<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
 <th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
 <th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th rowspan="2" scope="rowgroup">Mô phỏng</th>
-<th scope="row">Seen</th>
+<th scope="row">Doll</th>
 <td>0</td><td>0</td><td><b>100</b></td>
-<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
-<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
-<td><b>100</b></td><td>0</td><td>90</td>
-<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
+<td>0</td><td>0</td><td><b>95</b></td>
 </tr>
 <tr>
-<th scope="row">Unseen</th>
-<td>0</td><td>0</td><td><b>95</b></td>
+<th scope="row">Can</th>
+<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
 <td>0</td><td>0</td><td><b>90</b></td>
+</tr>
+<tr>
+<th scope="row">Stamp</th>
+<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
 <td>15</td><td>0</td><td><b>100</b></td>
+</tr>
+<tr>
+<th scope="row">Hammer</th>
+<td><b>100</b></td><td>0</td><td>90</td>
 <td>0</td><td>0</td><td><b>95</b></td>
+</tr>
+<tr>
+<th scope="row">Sweep</th>
+<td><b>100</b></td><td><b>100</b></td><td><b>100</b></td>
 <td>0</td><td>5</td><td><b>85</b></td>
 </tr>
+</tbody>
+</table>
+</div>
+
+<div class="table-scroll">
+<table class="post-table">
+<caption>Bảng 1. Thực tế (Nguồn: Hình 4, arXiv 2610.12470)</caption>
+<thead>
 <tr>
-<th rowspan="2" scope="rowgroup">Thực tế</th>
-<th scope="row">Seen</th>
-<td>0</td><td>60</td><td><b>100</b></td>
-<td>20</td><td><b>90</b></td><td><b>90</b></td>
-<td>20</td><td><b>90</b></td><td>80</td>
-<td>40</td><td>–</td><td><b>70</b></td>
-<td><b>100</b></td><td>70</td><td>80</td>
+<th rowspan="2">Nhiệm vụ</th>
+<th colspan="3">Seen</th>
+<th colspan="3">Unseen</th>
 </tr>
 <tr>
-<th scope="row">Unseen</th>
+<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
+<th>Do as I Do</th><th>CHORD</th><th>Dex-One2Many</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">Doll</th>
+<td>0</td><td>60</td><td><b>100</b></td>
 <td>0</td><td>0</td><td><b>80</b></td>
+</tr>
+<tr>
+<th scope="row">Can</th>
+<td>20</td><td><b>90</b></td><td><b>90</b></td>
 <td>0</td><td>15</td><td><b>75</b></td>
+</tr>
+<tr>
+<th scope="row">Stamp</th>
+<td>20</td><td><b>90</b></td><td>80</td>
 <td>10</td><td>0</td><td><b>85</b></td>
+</tr>
+<tr>
+<th scope="row">Hammer</th>
+<td>40</td><td>–</td><td><b>70</b></td>
 <td>5</td><td>–</td><td><b>60</b></td>
+</tr>
+<tr>
+<th scope="row">Sweep</th>
+<td><b>100</b></td><td>70</td><td>80</td>
 <td>5</td><td>0</td><td><b>75</b></td>
 </tr>
 </tbody>
@@ -177,7 +206,7 @@ Vì scene graph không phụ thuộc vào bàn tay, cùng một đặc tả nhi�
 
 <div class="table-scroll">
 <table class="post-table">
-<caption>Nguồn: Bảng 2. Table 1, arXiv 2610.12470</caption>
+<caption>Bảng 2. Tỉ lệ thành công theo embodiment (Nguồn: Table 1, arXiv 2610.12470)</caption>
 <thead>
 <tr>
 <th></th>

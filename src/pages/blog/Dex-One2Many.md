@@ -184,7 +184,15 @@ Quy mô huấn luyện cũng quan trọng: với 49,152 môi trường song song
 
 **Ví dụ.** Một tài xế lái giỏi trong mô phỏng vẫn cần quen với gương chiếu hậu hơi mờ của chiếc xe thật.
 
-Nhóm tác giả nêu hai hạn chế. Thứ nhất, vẫn còn khoảng cách sim-to-real do phụ thuộc vào pose 6D ước lượng; nhiễu pose và sai khác hình học của vật ảnh hưởng nhiều nhất ở các pha giàu tiếp xúc. Thứ hai, pipeline real-to-sim chỉ dựng được vật cứng; vật có khớp cần dựng asset thủ công. Ngoài ra, thực nghiệm gồm 5 nhiệm vụ trên mặt bàn với 20 lượt Unseen mỗi nhiệm vụ trên robot thật, chỉ một embodiment được thử trên phần cứng, phương pháp cần rất nhiều môi trường song song trên GPU, và phụ thuộc vào VLM cùng bộ predicate định sẵn. Mã nguồn của bài báo hiện chưa được công bố.
+### 6.1. Hạn chế do nhóm tác giả nêu
+
+Trong đoạn "Limitations and future work" thuộc Mục 5 (Conclusion), nhóm tác giả nêu hai hạn chế chính. Thứ nhất, vẫn còn khoảng cách sim-to-real vì việc triển khai thực tế dựa vào pose 6D ước lượng của vật; nhiễu ước lượng pose và sai khác giữa hình học vật trong mô phỏng và ngoài thực tế có thể làm giảm hiệu năng, đặc biệt ở các pha giàu tiếp xúc. Thứ hai, pipeline real-to-sim chỉ dựng được vật cứng, nên vật có khớp đòi hỏi asset dựng thủ công. Do một video đơn lẻ thường không bộc lộ cấu trúc khớp (vị trí, trục và giới hạn khớp), việc tự động suy ra cấu trúc động học này từ video được nhóm tác giả xem là hướng nghiên cứu tiếp theo.
+
+### 6.2. Đánh giá độc lập
+
+Bên cạnh các hạn chế trên, quy mô thực nghiệm còn nhỏ: chỉ có 5 nhiệm vụ trên mặt bàn, mỗi nhiệm vụ 20 lượt ở cấu hình Unseen trên robot thật, và chỉ một embodiment (UR3 + Wuji 1) được kiểm chứng trên phần cứng; kết quả đa embodiment mới dừng ở mô phỏng. Quá trình huấn luyện đòi hỏi số lượng lớn môi trường song song (49,152 trong cấu hình chính), nên phụ thuộc vào tài nguyên GPU đáng kể. Chất lượng trừu tượng hóa nhiệm vụ còn phụ thuộc vào VLM và bộ predicate định nghĩa sẵn. Cuối cùng, mã nguồn của bài báo hiện chưa được công bố, nên kết quả chưa thể được tái lập độc lập.
+
+### 6.3. Ý nghĩa thực tiễn
 
 Với các nhóm robotics và humanoid tại Việt Nam, hướng tiếp cận này có ba điểm đáng chú ý. Một video quay bằng điện thoại cùng mô phỏng có thể đủ để khởi động một chính sách tay khéo léo, giảm chi phí dữ liệu so với teleoperation. Thiết kế "VLM hiểu làm gì, RL học làm thế nào" cho phép dùng lại cùng một đặc tả nhiệm vụ khi phần cứng thay đổi. Các kỹ thuật như reset theo giai đoạn, reward suy từ predicate và lớp QP để thêm ràng buộc an toàn khi triển khai có thể áp dụng ngay vào các pipeline RL hiện có.
 

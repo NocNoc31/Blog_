@@ -8,10 +8,18 @@ import { resolveHeroImage } from '../utils/public-image';
 const { frontmatter } = Astro.props;
 const hero = resolveHeroImage(frontmatter.image);
 
+// At a phone width the long titles are taller than the hero, so preloading
+// the hero only delays that text. Preload when the picture is the larger box.
+const contentWidth = 380;
+const imageHeight = hero.width ? (contentWidth * hero.height) / hero.width : 0;
+const titleLines = Math.ceil(String(frontmatter.title ?? '').trim().length / 17) || 1;
+const heroIsLcp = imageHeight >= titleLines * 45 * 1.15;
+
 const seo = {
   title: frontmatter.title,
   description: frontmatter.description,
   image: frontmatter.image,
+  lcpImage: heroIsLcp ? hero.webp || hero.src || undefined : undefined,
 };
 ---
 
@@ -42,7 +50,7 @@ const seo = {
                 height={hero.height ?? 630}
                 class="post-content__img"
                 loading="eager"
-                fetchpriority="high"
+                fetchpriority={heroIsLcp ? 'high' : 'low'}
                 src={withBase(hero.src)}
                 alt={frontmatter.alt || frontmatter.title}
               />

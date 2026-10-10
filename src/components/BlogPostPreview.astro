@@ -12,7 +12,9 @@ const hero = resolveHeroImage(post.frontmatter.image);
   <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
   {hero.src && (
     <picture>
-      {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
+      {(priority && hero.card) || hero.webp ? (
+        <source srcset={withBase((priority && hero.card) || hero.webp)} type="image/webp" />
+      ) : null}
       <img
         class="post-preview__img"
         src={withBase(hero.src)}

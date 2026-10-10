@@ -40,6 +40,7 @@ export function resolveHeroImage(image) {
   }
 
   const webp = existsPublic(stemRelative + '.webp') ? `${stem}.webp` : null;
+  const card = existsPublic(stemRelative + '-card.webp') ? `${stem}-card.webp` : null;
   const sizedRelative = webp ? `${stemRelative}.webp` : raster ? raster.replace(/^\//, '') : null;
   const size = sizedRelative && existsPublic(sizedRelative)
     ? readImageSize(path.join(publicDir(), sizedRelative))
@@ -48,6 +49,7 @@ export function resolveHeroImage(image) {
   return {
     src: raster ? raster + suffix : null,
     webp: webp ? webp + suffix : null,
+    card: card ? card + suffix : null,
     width: size?.width ?? null,
     height: size?.height ?? null,
   };

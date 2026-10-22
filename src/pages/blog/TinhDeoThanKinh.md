@@ -8,8 +8,6 @@ publishedAt: 2026-08-24
 category: 'Life Styles'
 ---
 
-# Tính Dẻo Thần Kinh: Khi Bộ Não Trở Thành Công Cụ Bạn Có Thể Chủ Động Rèn Luyện
-
 _Ở tuổi 23, Eileen Gu vừa là vận động viên trượt tuyết tự do giàu thành tích nhất lịch sử Olympic, vừa tốt nghiệp Stanford, vừa là gương mặt đại diện của những thương hiệu hàng đầu thế giới. Nhưng điều cô nhấn mạnh nhiều nhất không phải là tài năng — mà là cách cô chủ động rèn luyện bộ não của mình._
 
 > 📺 **Nguồn:** Video _"Một khi bạn hiểu về Tính Dẻo Thần Kinh, cuộc đời bạn sẽ không bao giờ như trước nữa"_

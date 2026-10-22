@@ -2,165 +2,248 @@
 import 'katex/dist/katex.min.css';
 import Layout from './Page.astro';
 import Container from '../components/Container.astro';
-import { formatDate, slugify, withBase } from '../utils/helpers';
-import { resolveHeroImage } from '../utils/public-image';
+import CategoryLink from '../components/CategoryLink.astro';
+import PostImage from '../components/PostImage.astro';
+import ArticleToc from '../components/ArticleToc.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import { settings } from '../data/settings';
+import { formatDate, getReadingTime, slugify, withBase } from '../utils/helpers';
+import { getRelatedPosts, sortPosts } from '../utils/posts';
 
-const { frontmatter } = Astro.props;
-const hero = resolveHeroImage(frontmatter.image);
+const { frontmatter, headings = [] } = Astro.props;
+const rawContent = typeof Astro.props.rawContent === 'function' ? Astro.props.rawContent() : '';
+const readingMinutes = rawContent ? getReadingTime(rawContent) : null;
+const secondaryHeadings = headings.filter((heading) => heading.depth === 3);
+const toc = headings.some((heading) => heading.depth === 2)
+  ? headings.filter((heading) => heading.depth === 2)
+  : secondaryHeadings;
+const posts = sortPosts(await Astro.glob('../pages/blog/*.{md,mdx}'));
+const related = getRelatedPosts(posts, Astro.props.file, frontmatter.category, 2);
+const categoryUrl = frontmatter.category
+  ? withBase(`/blog/category/${slugify(frontmatter.category)}`)
+  : null;
+const shareUrl = new URL(Astro.url.pathname, settings.site).href;
+const shareText = encodeURIComponent(frontmatter.title);
+const initials = settings.author
+  .split(' ')
+  .filter(Boolean)
+  .map((part) => part[0])
+  .slice(-2)
+  .join('')
+  .toUpperCase();
 
 const seo = {
-  title: frontmatter.title,
+  title: `${frontmatter.title} — ${settings.name}`,
   description: frontmatter.description,
   image: frontmatter.image,
 };
 ---
 
 <Layout seo={seo}>
-  <Container>
-    <article class="post-content__article">
-      <div class="post-content__top fade-in">
-        {
-          frontmatter.category && (
-            <p class="post-content__category">
-              <a href={withBase(`/blog/category/${slugify(frontmatter.category)}`)}>
-                {frontmatter.category}
+  <div class="post-wide">
+    <Container>
+      <article class="post">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href={withBase('/')}>Trang chủ</a>
+          <span aria-hidden="true">/</span>
+          {categoryUrl && <a href={categoryUrl}>{frontmatter.category}</a>}
+          {categoryUrl && <span aria-hidden="true">/</span>}
+          <span aria-current="page">Bài viết</span>
+        </nav>
+
+        <section class:list={['post-split', !frontmatter.image && 'post-split--no-cover']}>
+          <header class="post-header">
+            <div class="post-kicker">
+              {frontmatter.category && <CategoryLink category={frontmatter.category} />}
+              <span class="post-kicker__text">Bài viết</span>
+            </div>
+            <h1 class="post-title">{frontmatter.title}</h1>
+            {frontmatter.description && <p class="post-lead">{frontmatter.description}</p>}
+            <div class="post-meta">
+              <span class="author"><span class="avatar">{initials}</span>{settings.author}</span>
+              <span class="meta-sep" aria-hidden="true"></span>
+              <time datetime={frontmatter.publishedAt}>{formatDate(frontmatter.publishedAt)}</time>
+              {
+                readingMinutes && (
+                  <>
+                    <span class="meta-sep" aria-hidden="true"></span>
+                    <span>{readingMinutes} phút đọc</span>
+                  </>
+                )
+              }
+              <span class="meta-spacer"></span>
+              <button class="save-btn" type="button" data-save-post aria-pressed="false">Lưu bài</button>
+            </div>
+          </header>
+
+          {
+            frontmatter.image && (
+              <figure class="post-cover">
+                <PostImage
+                  image={frontmatter.image}
+                  alt={frontmatter.alt || frontmatter.title}
+                  width={1200}
+                  height={800}
+                  loading="eager"
+                  class="post-cover__img"
+                />
+                {(frontmatter.imageCaption || frontmatter.alt) && (
+                  <figcaption>{frontmatter.imageCaption || frontmatter.alt}</figcaption>
+                )}
+              </figure>
+            )
+          }
+        </section>
+
+        <div class="reader-bar">
+          <div class="reader-inner">
+            <span class="progress-label">Tiến độ</span>
+            <div class="progress" aria-hidden="true"><span data-reading-progress></span></div>
+            <div class="reader-share">
+              <a
+                class="share-btn"
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${shareText}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                X
               </a>
-            </p>
-          )
-        }
-        <h1 class="post-content__title">{frontmatter.title}</h1>
-        <p class="post-content__date">
-          <time>{formatDate(frontmatter.publishedAt)}</time>
-        </p>
-        <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
-        {
-          hero.src && (
-            <picture>
-              {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
-              <img
-                width="1200"
-                height="630"
-                class="post-content__img"
-                loading="eager"
-                src={withBase(hero.src)}
-                alt={frontmatter.alt}
-              />
-            </picture>
-          )
-        }
-      </div>
-      <div class="post-content__content flow fade-in">
-        <slot />
-      </div>
-    </article>
-  </Container>
+              <button class="share-btn" type="button" data-copy-link>Chép liên kết</button>
+              {readingMinutes && <span class="reading-time">{readingMinutes} phút đọc</span>}
+            </div>
+          </div>
+        </div>
+
+        <div class:list={['post-body', !toc.length && 'post-body--full']}>
+          {toc.length > 0 && <ArticleToc headings={toc} />}
+
+          <div class="post-main">
+            <div class="post-content flow">
+              <slot />
+            </div>
+
+            <section class="post-author" aria-labelledby="post-author-title">
+              <span class="avatar">{initials}</span>
+              <div>
+                <h2 id="post-author-title">Về tác giả</h2>
+                <p>{settings.description}</p>
+              </div>
+            </section>
+
+            <div class="post-end">
+              {
+                categoryUrl && (
+                  <div class="post-topic">
+                    <div>
+                      <span>Chủ đề</span>
+                      <strong>{frontmatter.category}</strong>
+                    </div>
+                    <a href={categoryUrl}>Xem tất cả bài viết →</a>
+                  </div>
+                )
+              }
+
+              {related.length > 0 && <RelatedPosts posts={related} />}
+
+              <a class="back-top" href="#main">↑ Quay lại đầu trang</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </Container>
+  </div>
 </Layout>
 
-<!-- <style>
-  .post-content__top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .post-content__category {
-    padding: 0.5rem 1rem;
-    font-size: var(--step--1);
-    background-color: var(--theme-surface-1);
-    border-radius: 2rem;
-  }
-  .post-content__category a {
-    text-decoration: none;
-  }
-  .post-content__category a:hover {
-    opacity: 0.8;
-  }
-  .post-content__article {
-    padding: 5vh 0;
-  }
-  .post-content__title {
-    margin: 1rem auto;
-    font-size: var(--step-5);
-  }
-  .post-content__date {
-    margin: 0 auto;
-    font-size: var(--step--1);
-    color: var(--color-gray);
-    font-style: italic;
-  }
-  .post-content__img {
-    margin: 3rem 0 2rem 0;
-    max-width: 100%;
-    height: auto;
-    border-radius: 2rem;
-  }
-  .post-content__content :global(img) {
-    display: block;
-    margin: 2rem auto;
-    max-width: 100%;
-  }
-</style> -->
+<script>
+  const progressBars = [...document.querySelectorAll('[data-reading-progress]')];
+  const tocLinks = [...document.querySelectorAll('[data-toc-link]')];
+  const sections = tocLinks
+    .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+    .filter(Boolean);
 
+  const updateProgress = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = max > 0 ? Math.min(100, Math.max(2, (window.scrollY / max) * 100)) : 100;
+    progressBars.forEach((bar) => {
+      bar.style.width = `${percent}%`;
+    });
+  };
 
+  const updateToc = () => {
+    if (!sections.length) return;
+    const marker = 180;
+    let active = sections[0];
 
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= marker) active = section;
+      else break;
+    }
 
-<style>
-  .post-content__top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    tocLinks.forEach((link) => {
+      if (decodeURIComponent(link.hash.slice(1)) === active.id) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  const onScroll = () => {
+    updateProgress();
+    updateToc();
+  };
+
+  updateProgress();
+  updateToc();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  const saveBtn = document.querySelector('[data-save-post]');
+  if (saveBtn) {
+    const storageKey = 'net-muc:saved-posts';
+    const postPath = window.location.pathname;
+    let saved = [];
+
+    try {
+      const parsed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      saved = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      saved = [];
+    }
+
+    const syncSaveButton = () => {
+      const isSaved = saved.includes(postPath);
+      saveBtn.setAttribute('aria-pressed', String(isSaved));
+      saveBtn.textContent = isSaved ? 'Đã lưu' : 'Lưu bài';
+    };
+
+    syncSaveButton();
+    saveBtn.addEventListener('click', () => {
+      saved = saved.includes(postPath)
+        ? saved.filter((path) => path !== postPath)
+        : [...saved, postPath];
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(saved));
+      } catch {
+        return;
+      }
+      syncSaveButton();
+    });
   }
-  .post-content__category {
-    padding: 0.5rem 1rem;
-    font-size: var(--step--1);
-    background-color: var(--theme-surface-1);
-    border-radius: 2rem;
+
+  const copyBtn = document.querySelector('[data-copy-link]');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const original = copyBtn.textContent;
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        copyBtn.textContent = 'Đã chép';
+      } catch {
+        copyBtn.textContent = 'Không chép được';
+      }
+      window.setTimeout(() => {
+        copyBtn.textContent = original;
+      }, 1600);
+    });
   }
-  .post-content__category a {
-    text-decoration: none;
-  }
-  .post-content__category a:hover {
-    opacity: 0.8;
-  }
-  .post-content__article {
-    padding: 5vh 0;
-  }
-  .post-content__title {
-    margin: 1rem auto;
-    font-size: var(--step-5);
-  }
-  .post-content__date {
-    margin: 0 auto;
-    font-size: var(--step--1);
-    color: var(--color-gray);
-    font-style: italic;
-  }
-  .post-content__img {
-    margin: 3rem auto;
-    max-width: 800px; /* Giới hạn chiều rộng ảnh tiêu đề */
-    width: 100%;
-    height: auto;
-    border-radius: 2rem;
-    display: block;
-  }
-  .post-content__content :global(img) {
-    max-width: 800px; /* Giới hạn chiều rộng ảnh trong nội dung */
-    width: 100%;
-    height: auto;
-    margin: 2rem auto;
-    display: block;
-    border-radius: 1rem;
-  }
-  .post-content__content :global(figcaption) {
-    text-align: center;
-    font-style: italic;
-    color: #666;
-    font-size: 0.9em;
-    margin-top: 0.5em;
-  }
-  .post-content__content :global(.katex-display) {
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-</style>
+</script>

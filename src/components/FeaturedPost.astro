@@ -1,0 +1,26 @@
+---
+import PostImage from './PostImage.astro';
+import { formatDate, withBase } from '../utils/helpers';
+
+const { post } = Astro.props;
+const { frontmatter } = post;
+const url = withBase(post.url);
+---
+
+<article class="feature-card">
+  <a class="feature-media" href={url} tabindex="-1" aria-hidden="true">
+    <span class="sticker">Bài mới</span>
+    <PostImage image={frontmatter.image} alt={frontmatter.alt || ''} loading="eager" />
+  </a>
+  <div class="feature-copy">
+    <p class="kicker">
+      {frontmatter.category && <>{frontmatter.category} · </>}
+      Nổi bật · {formatDate(frontmatter.publishedAt)}
+    </p>
+    <h2><a href={url}>{frontmatter.title}</a></h2>
+    {frontmatter.description && <p>{frontmatter.description}</p>}
+    <a class="btn" href={url}>
+      Đọc bài <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</article>

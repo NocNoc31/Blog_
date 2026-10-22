@@ -14,15 +14,16 @@ export class CopyCodeButton extends LitElement {
         justify-content: center;
         width: fit-content;
         margin: 0;
-        padding: 0.5rem;
-        background: #e2e8f022;
-        border: none;
-        border-radius: 0.25rem;
-        color: #fff;
+        padding: 0.45rem 0.6rem;
+        background: color-mix(in srgb, var(--code-fg) 14%, transparent);
+        border: 1px solid color-mix(in srgb, var(--code-fg) 28%, transparent);
+        border-radius: var(--r-sm);
+        color: var(--code-fg);
         cursor: pointer;
-        font-weight: 600;
-        /* font-size: var(--step--2); */
-        /* line-height: 1; */
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
     `,
   ];
@@ -58,7 +59,7 @@ export class CopyCodeButton extends LitElement {
 
   render() {
     return html`
-      <button @click=${this.copyCode}>${this._isCopied ? 'Copied ✅' : 'Copy'}</button>
+      <button @click=${this.copyCode}>${this._isCopied ? 'Đã chép' : 'Sao chép'}</button>
     `;
   }
 }

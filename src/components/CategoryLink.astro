@@ -1,0 +1,7 @@
+---
+import { slugify, withBase } from '../utils/helpers';
+
+const { category, class: className = 'cat' } = Astro.props;
+---
+
+<a class={className} href={withBase(`/blog/category/${slugify(category)}`)}>{category}</a>

@@ -1,53 +1,41 @@
 ---
 import Container from './Container.astro';
-import Logo from './Logo.astro';
-import SocialList from './SocialList.astro';
+import { settings } from '../data/settings';
 import { withBase } from '../utils/helpers';
 ---
 
 <script>
-  import './ThemeToggleButton/theme-toggle-button'
+  import './ThemeToggleButton/theme-toggle-button';
+
+  document.querySelectorAll('.mobile-nav a').forEach((link) => {
+    link.addEventListener('click', () => link.closest('details')?.removeAttribute('open'));
+  });
 </script>
 
-<header>
+<header class="site-header">
   <Container>
-    <nav>
-      <a class="header__logo" href={withBase('/')} title="Navigate Home">
-        <Logo />
+    <nav class="nav" aria-label="Chính">
+      <a class="brand" href={withBase('/')} aria-label={`${settings.name} — trang chủ`}>
+        <span>nét mực</span><b aria-hidden="true">.</b>
       </a>
-      <SocialList />
+
+      <ul class="nav-links">
+        {settings.nav.map((item) => (
+          <li><a href={withBase(item.href)}>{item.label}</a></li>
+        ))}
+      </ul>
+
+      <div class="nav-end">
+        <theme-toggle-button></theme-toggle-button>
+        <details class="mobile-nav">
+          <summary><span aria-hidden="true">☰</span> Menu</summary>
+          <nav aria-label="Di động">
+            {settings.nav.map((item) => (
+              <a href={withBase(item.href)}>{item.label}</a>
+            ))}
+          </nav>
+        </details>
+      </div>
     </nav>
   </Container>
-  <div class="theme-toggle__container">
-    <!-- I was running into some issues with the Lit integration so I'm using it as a client script for now -->
-    <theme-toggle-button></theme-toggle-button>
-  </div>
 </header>
-
-<style>
-  header {
-    height: var(--theme-header-height, 64px);
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--theme-primary-light);
-  }
-  nav {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .header__logo {
-    display: flex;
-    align-items: center;
-    margin: 0;
-  }
-  .theme-toggle__container {
-    margin-left: 1rem;
-    position: relative;
-    right: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>

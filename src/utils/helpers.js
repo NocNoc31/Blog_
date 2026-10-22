@@ -11,32 +11,39 @@ export function withBase(path = '/') {
 
 export function formatDate(date) {
   const d = new Date(date);
-  return d.toLocaleDateString('en-US', {
+  if (Number.isNaN(d.valueOf())) return '';
+
+  return d.toLocaleDateString('vi-VN', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    timeZone: 'UTC',
   });
+}
+
+export function getReadingTime(content = '', wordsPerMinute = 200) {
+  const text = content
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#>*_`~\-\[\]()]/g, ' ');
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / wordsPerMinute));
 }
 
 export function slugify(string) {
   return string
     .toString()
     .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^\w\-]+/g, '')
     .replace(/\-\-+/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '');
-}
-
-export function generateCategoryData(categories) {
-  let categoryData = [];
-  categories.forEach((category) => {
-    categoryData.push({
-      name: category,
-      slug: `${slugify(category)}`,
-    });
-  });
-  return categoryData;
 }

@@ -8,8 +8,6 @@ publishedAt: 2026-08-24
 category: "Life Styles"
 ---
 
-# Hạnh Phúc Không Phải Là Đích Đến: Bài Học Từ Ba Cuộc Đời Vĩ Đại
-
 _Một vị Thái tử từ bỏ ngai vàng, một Hoàng đế chinh phục cả thế giới, và một Văn hào có trong tay mọi thành tựu — cả ba đều từng đứng trước cùng một câu hỏi: vì sao có tất cả rồi mà vẫn không thấy hạnh phúc?_
 
 ---

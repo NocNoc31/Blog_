@@ -1,93 +1,27 @@
 ---
-const {post} = Astro.props;
-import {formatDate, withBase} from '../utils/helpers';
-import {resolveHeroImage} from '../utils/public-image';
+import CategoryLink from './CategoryLink.astro';
+import PostImage from './PostImage.astro';
+import { formatDate, withBase } from '../utils/helpers';
 
-const hero = resolveHeroImage(post.frontmatter.image);
-
+const { post } = Astro.props;
+const { frontmatter } = post;
+const url = withBase(post.url);
 ---
 
-<a class="post-preview__link fade-in" href={post.url}>
-<article class:list={['post-preview__article', { 'post-preview__article--no-image': !hero.src }]}>
-  <!-- Hopefully we'll be able to use Astro's image integration for this soon -->
-  {hero.src && (
-    <picture>
-      {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
-      <img class="post-preview__img" src={withBase(hero.src)} alt={`Featured image for ${post.frontmatter.title}`} >
-    </picture>
-  )}
-  <div class="post-preview__text">
-    {post.frontmatter?.category && <p class="post-preview__category">{post.frontmatter.category}</p>}
-    <h2>{post.frontmatter.title}</h2>
-    <p class="post-preview__date">{formatDate(post.frontmatter.publishedAt)}</p>
+<article class="post-card">
+  <a class="card-media" href={url} tabindex="-1" aria-hidden="true">
+    <PostImage image={frontmatter.image} alt={frontmatter.alt || ''} />
+  </a>
+  <div class="card-body">
+    <div class="card-top">
+      {frontmatter.category ? <CategoryLink category={frontmatter.category} /> : <span />}
+      <time class="date" datetime={frontmatter.publishedAt}>{formatDate(frontmatter.publishedAt)}</time>
+    </div>
+    <h2 class="card-title"><a href={url}>{frontmatter.title}</a></h2>
+    {frontmatter.description && <p class="card-excerpt">{frontmatter.description}</p>}
+    <div class="card-foot">
+      <span class="more">Đọc bài</span>
+      <span class="circ" aria-hidden="true">↗</span>
+    </div>
   </div>
 </article>
-</a>
-  
-<style>
-.post-preview__link {
-  text-decoration: none;
-}
-.post-preview__link:hover .post-preview__img {
-  box-shadow: rgba(0, 0, 0, 0.1) 0 10px 20px 0;
-  transform: scale(1.1);
-}
-.post-preview__link:hover .post-preview__text {
-  transform: translateX(0.5rem);
-}
-.post-preview__article {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  align-items: center;
-}
-.post-preview__article--no-image {
-  grid-template-columns: 1fr;
-}
-.post-preview__text {
-  transition: transform 0.2s ease-in-out;
-}
-.post-preview__category {
-  width: fit-content;
-  padding: 0.25rem 0.75rem;
-  background-color: var(--theme-surface-1);
-  border-radius: 2rem;
-  margin-bottom: 0.5rem;
-  font-size: var(--step--2);
-  /* color: #666; */
-}
-.post-preview__text h2{
-  font-size: var(--step-1);
-}
-.post-preview__img {
-  width: 250px;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 1rem;
-  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
-}
-.post-preview__date {
-  font-size: var(--step--1);
-  color: #666;
-}
-@media (max-width: 768px) {
-  .post-preview__article {
-    grid-template-columns: 1fr;
-  }
-  .post-preview__img {
-    aspect-ratio: 16/9;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .post-preview__text {
-    margin-top: 1rem;
-  }
-  .post-preview__link:hover .post-preview__img {
-    box-shadow: none;
-    transform: none;
-  }
-  .post-preview__link:hover .post-preview__text {
-    transform: none;
-  }
-}
-</style>

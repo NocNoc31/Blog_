@@ -1,0 +1,44 @@
+---
+import { withBase } from '../utils/helpers';
+import { resolveHeroImage } from '../utils/public-image';
+
+export interface Props {
+  image?: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const {
+  image,
+  alt = '',
+  width = 1200,
+  height = 630,
+  loading = 'lazy',
+  class: className,
+} = Astro.props;
+
+const hero = resolveHeroImage(image);
+const src = hero.src || hero.webp;
+---
+
+{
+  src ? (
+    <picture>
+      {hero.webp && <source srcset={withBase(hero.webp)} type="image/webp" />}
+      <img
+        class={className}
+        src={withBase(src)}
+        width={width}
+        height={height}
+        loading={loading}
+        decoding="async"
+        alt={alt}
+      />
+    </picture>
+  ) : (
+    <div class:list={['post-image__placeholder', className]} aria-hidden="true" />
+  )
+}

@@ -1,6 +1,9 @@
 # build output
 dist/
 
+# local design mockups and screenshots
+design/
+
 # dependencies
 node_modules/
 

@@ -1,8 +1,20 @@
 export const settings = {
   site: 'https://nocnoc31.github.io',
   base: '/Blog_',
-  name: 'Simple Blog',
-  title: 'Site title',
-  description: 'Site description',
-  showLittleSticksPlug: true,
-}
+  name: 'nét mực.',
+  author: 'Lộc Phạm',
+  title: 'nét mực. — Ghi chép & lưu giữ',
+  description: 'Ghi chép về robot, sách và đời sống. Giữ lại những điều đáng nhớ.',
+  tagline: 'Ghi chép & lưu giữ',
+  quote: 'Nét mực nhạt nhất vẫn hơn trí nhớ tốt nhất.',
+  quoteLead: 'Nét mực nhạt nhất',
+  quoteTail: 'vẫn hơn trí nhớ tốt nhất.',
+  footerNote: 'Ghi chép về robot, sách và đời sống.',
+  locale: 'vi',
+  ogLocale: 'vi_VN',
+  nav: [
+    { label: 'Bài viết', href: '/#bai-viet' },
+    { label: 'Chủ đề', href: '/#chu-de' },
+    { label: 'Giới thiệu', href: '/#gioi-thieu' },
+  ],
+};

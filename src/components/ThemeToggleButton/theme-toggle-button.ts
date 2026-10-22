@@ -7,78 +7,77 @@ export class ThemeToggleButton extends LitElement {
   static styles = css`
     :host {
       display: inline-block;
+      line-height: 0;
     }
+
     button {
-      width: 28px;
-      height: 28px;
-      padding: 0.25rem;
+      width: 34px;
+      height: 34px;
+      padding: 0.3rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
       box-sizing: border-box;
-      border: none;
-      outline: none;
-      background-color: var(--theme-surface-1);
+      border: var(--bw) solid var(--line-strong);
+      border-radius: var(--r-sm);
+      background-color: var(--paper);
+      color: var(--ink);
       fill: currentcolor;
-      color: var(--theme-on-surface-1);
-      text-decoration: none;
       cursor: pointer;
-      vertical-align: middle;
       -webkit-tap-highlight-color: transparent;
-      border-radius: 50%;
-      border: 1px solid var(--theme-primary);
-      transition: background-color 100ms cubic-bezier(0.6, -0.28, 0.735, 0.045);
+      transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    button:hover {
+      background-color: var(--accent-3);
+      color: #1b2a21;
+      transform: translateY(-1px);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
     }
   `;
 
-  // set the _doc element
   private _doc = document.firstElementChild;
 
   @property({ type: String })
   theme: string | null = null;
 
-  private _getCurrentTheme() {
-    // check for a local storage theme first
-    const localStorageTheme = localStorage.getItem('theme');
-    if (localStorageTheme !== null) {
-      this._setTheme(localStorageTheme);
-    } else {
-      this._setTheme('light');
-    }
-  }
-
   firstUpdated() {
     this._getCurrentTheme();
   }
 
-  private _setTheme(theme) {
+  private _getCurrentTheme() {
+    const stored = localStorage.getItem('theme');
+    const preferred =
+      stored ??
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    this._setTheme(preferred, stored !== null);
+  }
+
+  private _setTheme(theme: string, persist = true) {
     this.theme = theme;
-    this._doc.setAttribute('color-scheme', theme);
-    localStorage.setItem('theme', theme);
+    this._doc?.setAttribute('color-scheme', theme);
+    if (persist) localStorage.setItem('theme', theme);
   }
 
   private _toggleTheme() {
-    if (this.theme === 'dark') {
-      this._setTheme('light');
-    } else {
-      this._setTheme('dark');
-    }
+    this._setTheme(this.theme === 'dark' ? 'light' : 'dark');
   }
 
   render() {
+    const next = this.theme === 'dark' ? 'sáng' : 'tối';
+
     return html`
       <button
         @click=${this._toggleTheme}
-        title=${`Enable ${this.theme === 'dark' ? 'Light' : 'Dark'} Theme`}
+        aria-label=${`Chuyển sang giao diện ${next}`}
+        title=${`Chuyển sang giao diện ${next}`}
       >
-        ${this.theme === 'dark'
-          ? html`
-              ${lightThemeIcon}
-            `
-          : html`
-              ${darkThemeIcon}
-            `}
+        ${this.theme === 'dark' ? lightThemeIcon : darkThemeIcon}
       </button>
     `;
   }

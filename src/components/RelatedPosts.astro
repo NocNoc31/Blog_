@@ -1,0 +1,51 @@
+---
+import PostImage from './PostImage.astro';
+import { formatDate, withBase } from '../utils/helpers';
+
+interface RelatedPost {
+  url: string;
+  frontmatter: {
+    title: string;
+    category?: string;
+    publishedAt: string;
+    image?: string;
+  };
+}
+
+export interface Props {
+  posts?: RelatedPost[];
+  allHref?: string;
+}
+
+const { posts = [], allHref = withBase('/#bai-viet') } = Astro.props;
+---
+
+<section class="post-related" aria-labelledby="related-title">
+  <div class="related-head">
+    <h2 id="related-title">Đọc tiếp</h2>
+    <a href={allHref}>Tất cả bài viết →</a>
+  </div>
+  <div class="related-grid">
+    {
+      posts.map((post) => {
+        const { frontmatter } = post;
+        return (
+          <a class="related-card" href={withBase(post.url)}>
+            <PostImage
+              image={frontmatter.image}
+              alt=""
+              width={172}
+              height={132}
+              class="related-card__img"
+            />
+            <span class="related-card__body">
+              {frontmatter.category && <span class="related-cat">{frontmatter.category}</span>}
+              <strong>{frontmatter.title}</strong>
+              <time datetime={frontmatter.publishedAt}>{formatDate(frontmatter.publishedAt)}</time>
+            </span>
+          </a>
+        );
+      })
+    }
+  </div>
+</section>

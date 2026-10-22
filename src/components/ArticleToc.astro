@@ -1,0 +1,30 @@
+---
+export interface Props {
+  headings?: { depth: number; slug: string; text: string }[];
+}
+
+const { headings = [] } = Astro.props;
+---
+
+<aside class="post-toc" aria-label="Trong bài viết này">
+  <span class="toc-kicker">Trong bài viết này</span>
+  <ol class="toc-list">
+    {
+      headings.map((heading, index) => (
+        <li>
+          <a href={`#${heading.slug}`} data-toc-link>
+            <span class="toc-num">{String(index + 1).padStart(2, '0')}</span>
+            <span>{heading.text}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="toc-progress">
+    <div class="progress-label">
+      <span>Tiến độ đọc</span>
+      <span>{headings.length} mục</span>
+    </div>
+    <div class="progress-track" aria-hidden="true"><span data-reading-progress></span></div>
+  </div>
+</aside>

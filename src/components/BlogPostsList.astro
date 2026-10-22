@@ -1,24 +1,19 @@
 ---
-import BlogPostPreview from "./BlogPostPreview.astro";
+import BlogPostPreview from './BlogPostPreview.astro';
 
-const {posts} = Astro.props;
+const { posts = [], empty = 'Chưa có bài viết nào.' } = Astro.props;
 ---
 
-<ul>
-  {posts.map((post) => (
-    <li>
-      <BlogPostPreview post={post} />
-    </li>
-  ))}
-</ul>
+{posts.length === 0 && <p class="empty-state">{empty}</p>}
 
-<style>
-  ul {
-    margin: 0 0 10vh 0;
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-</style>
+{
+  posts.length > 0 && (
+    <ul class="post-grid">
+      {posts.map((post) => (
+        <li>
+          <BlogPostPreview post={post} />
+        </li>
+      ))}
+    </ul>
+  )
+}

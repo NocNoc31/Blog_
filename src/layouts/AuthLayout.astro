@@ -1,0 +1,37 @@
+---
+import Page from './Page.astro';
+import { settings } from '../data/settings';
+
+export interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  quote?: string;
+  note?: string;
+}
+
+const { title, description, eyebrow, heading, lead, quote, note } = Astro.props;
+---
+
+<Page seo={{ title: `${title} — ${settings.name}`, description, robots: 'noindex, nofollow' }}>
+  <section class="auth-page">
+    <div class="container auth-grid">
+      <aside class="auth-aside" aria-hidden="true">
+        <span class="auth-aside__mark">nét mực<b>.</b></span>
+        <p class="auth-aside__quote">{quote || 'Một chỗ để những điều đáng nhớ không bị bỏ lại phía sau.'}</p>
+        <p class="auth-aside__note">
+          {note || 'Tài khoản giúp bạn lưu bài viết, quay lại phần đang đọc và giữ một danh sách riêng trong nét mực.'}
+        </p>
+      </aside>
+
+      <div class="auth-card">
+        <p class="auth-card__eyebrow">{eyebrow}</p>
+        <h1>{heading}</h1>
+        <p class="auth-card__lead">{lead}</p>
+        <slot />
+      </div>
+    </div>
+  </section>
+</Page>

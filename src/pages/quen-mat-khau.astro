@@ -1,0 +1,48 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { withBase } from '../utils/helpers';
+---
+
+<AuthLayout
+  title="Quên mật khẩu"
+  description="Yêu cầu liên kết đặt lại mật khẩu cho tài khoản nét mực của bạn."
+  eyebrow="Khôi phục quyền truy cập"
+  heading="Quên mật khẩu?"
+  lead="Nhập email bạn đã dùng để tạo tài khoản. Mình sẽ gửi một liên kết để bạn chọn mật khẩu mới."
+  note="Liên kết đặt lại chỉ dùng một lần và hết hạn sau một thời gian ngắn, nên bạn kiểm tra hộp thư sớm nhé."
+>
+  <form class="auth-form" method="post" data-auth-form="forgot">
+    <div class="auth-field">
+      <label for="forgot-email">Email</label>
+      <input
+        id="forgot-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        placeholder="ban@vidu.com"
+        required
+      />
+    </div>
+
+    <p class="auth-alert" data-auth-alert role="alert" aria-live="polite"></p>
+
+    <div class="auth-success" data-auth-success role="status" aria-live="polite">
+      <strong>Kiểm tra hộp thư của bạn.</strong> Nếu email này có tài khoản, mình đã gửi một liên kết đặt lại
+      mật khẩu. Liên kết chỉ dùng một lần và sẽ hết hạn sau một thời gian ngắn.
+    </div>
+
+    <button class="auth-submit" type="submit">
+      <span data-label>Gửi liên kết đặt lại</span>
+    </button>
+  </form>
+
+  <p class="auth-footer">
+    Quay lại <a href={withBase('/dang-nhap')}>đăng nhập</a> hoặc{' '}
+    <a href={withBase('/dang-ky')}>tạo tài khoản mới</a>.
+  </p>
+</AuthLayout>
+
+<script>
+  import '../scripts/auth-forms';
+</script>

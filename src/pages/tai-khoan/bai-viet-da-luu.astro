@@ -1,0 +1,65 @@
+---
+import { desc, eq } from 'drizzle-orm';
+import AccountShell from '../../layouts/AccountShell.astro';
+import { db } from '../../lib/db';
+import { savedPosts } from '../../lib/db/schema';
+import { formatDate, withBase } from '../../utils/helpers';
+
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect(
+    `${withBase('/dang-nhap')}?next=${encodeURIComponent('/tai-khoan/bai-viet-da-luu')}`
+  );
+}
+
+const posts = await db
+  .select()
+  .from(savedPosts)
+  .where(eq(savedPosts.userId, user.id))
+  .orderBy(desc(savedPosts.createdAt));
+---
+
+<AccountShell
+  title="Bài đã lưu"
+  description="Những bài viết bạn đã lưu trong nét mực."
+  heading="Bài đã lưu."
+  lead="Những ghi chép bạn muốn quay lại. Lưu từ trang bài viết, xem lại ở đây."
+  active="saved"
+>
+  <section class="account-card" data-saved-list>
+    <h2>Danh sách của bạn</h2>
+    <p data-saved-count>{posts.length} bài đã lưu.</p>
+
+    {
+      posts.length > 0 ? (
+        <div class="account-list">
+          {posts.map((post) => (
+            <article class="saved-card" data-saved-item data-post-slug={post.postSlug}>
+              <div>
+                <h3>
+                  <a href={withBase(post.postUrl)}>{post.postTitle}</a>
+                </h3>
+                <time datetime={post.createdAt.toISOString()}>Lưu {formatDate(post.createdAt)}</time>
+              </div>
+              <button class="saved-remove" type="button" data-saved-remove>
+                Bỏ lưu
+              </button>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div class="account-empty" data-saved-empty>
+          Chưa có bài nào được lưu. Khi đọc một bài, chọn “Lưu bài” để giữ lại ở đây.
+        </div>
+      )
+    }
+  </section>
+
+  <p class="auth-footer">
+    <a href={withBase('/#bai-viet')}>Tiếp tục đọc bài</a>
+  </p>
+</AccountShell>
+
+<script>
+  import '../../scripts/account';
+</script>

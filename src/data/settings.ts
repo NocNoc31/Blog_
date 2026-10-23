@@ -1,6 +1,6 @@
 export const settings = {
-  site: 'https://nocnoc31.github.io',
-  base: '/Blog_',
+  site: import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321',
+  base: '/',
   name: 'nét mực.',
   author: 'Lộc Phạm',
   title: 'nét mực. — Ghi chép & lưu giữ',

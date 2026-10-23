@@ -5,9 +5,10 @@ import BlogPostsList from '../components/BlogPostsList.astro';
 import FeaturedPost from '../components/FeaturedPost.astro';
 import { settings } from '../data/settings';
 import { withBase } from '../utils/helpers';
-import { getCategories, sortPosts } from '../utils/posts';
+import { getCategories } from '../utils/posts';
+import { allPosts } from '../utils/content.js';
 
-const posts = sortPosts(await Astro.glob('./blog/*.{md,mdx}'));
+const posts = allPosts;
 const featured = posts[0];
 const rest = posts.slice(1);
 const categories = getCategories(posts);
@@ -26,7 +27,7 @@ const seo = {
           <p class="hello"><b aria-hidden="true"></b> {settings.tagline}</p>
           <h1>Giữ lại<br />những điều<br /><span class="box">đáng nhớ.</span></h1>
           <p class="lead">
-            Một cuốn sổ mở về robot, sách và đời sống. Ghi lại để ký ức không phải tự nhớ một mình.
+            Ở đây chúng tôi nói về sách, robot, đời sống.
           </p>
           <div class="manifesto">
             <span>Robot</span>

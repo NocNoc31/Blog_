@@ -1,0 +1,66 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { withBase } from '../utils/helpers';
+---
+
+<AuthLayout
+  title="Đặt lại mật khẩu"
+  description="Chọn mật khẩu mới cho tài khoản nét mực của bạn."
+  eyebrow="Đặt lại mật khẩu"
+  heading="Chọn mật khẩu mới."
+  lead="Một mật khẩu mới, dài từ 8 ký tự trở lên, là đủ để bạn mở lại cuốn sổ của mình."
+  note="Liên kết đặt lại chỉ dùng một lần và hết hạn sau một thời gian ngắn. Nếu liên kết không còn dùng được, bạn có thể yêu cầu liên kết mới."
+>
+  <form class="auth-form" method="post" data-auth-form="reset">
+    <input type="hidden" name="token" value="" />
+
+    <div class="auth-field">
+      <label for="reset-password">Mật khẩu mới</label>
+      <input
+        id="reset-password"
+        name="password"
+        type="password"
+        autocomplete="new-password"
+        minlength="8"
+        aria-describedby="reset-password-hint"
+        required
+      />
+      <p class="auth-field__hint" id="reset-password-hint">Mật khẩu cần ít nhất 8 ký tự.</p>
+    </div>
+
+    <div class="auth-field">
+      <label for="reset-confirm-password">Nhập lại mật khẩu mới</label>
+      <input
+        id="reset-confirm-password"
+        name="confirmPassword"
+        type="password"
+        autocomplete="new-password"
+        minlength="8"
+        required
+      />
+    </div>
+
+    <p class="auth-alert" data-auth-alert role="alert" aria-live="polite"></p>
+
+    <div class="auth-success" data-auth-success role="status" aria-live="polite">
+      <strong>Mật khẩu đã được cập nhật.</strong> Bạn có thể
+      <a href={withBase('/dang-nhap')}>đăng nhập</a> bằng mật khẩu mới ngay bây giờ.
+    </div>
+
+    <button class="auth-submit" type="submit">
+      <span data-label>Lưu mật khẩu mới</span>
+    </button>
+  </form>
+
+  <p class="auth-footer">
+    Liên kết đã hết hạn? <a href={withBase('/quen-mat-khau')}>Yêu cầu liên kết mới</a>.
+  </p>
+
+  <p class="auth-note">
+    Liên kết đặt lại chỉ dùng được một lần và sẽ hết hạn sau một thời gian ngắn.
+  </p>
+</AuthLayout>
+
+<script>
+  import '../scripts/auth-forms';
+</script>

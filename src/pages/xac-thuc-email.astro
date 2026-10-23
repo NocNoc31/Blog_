@@ -1,0 +1,45 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { withBase } from '../utils/helpers';
+
+const hasError = Boolean(Astro.url.searchParams.get('error'));
+---
+
+<AuthLayout
+  title={hasError ? 'Liên kết chưa dùng được' : 'Email đã được xác thực'}
+  description={
+    hasError
+      ? 'Liên kết xác thực email đã hết hạn hoặc không hợp lệ.'
+      : 'Email của bạn đã được xác thực. Bạn có thể tiếp tục với nét mực.'
+  }
+  eyebrow="Xác thực email"
+  heading={hasError ? 'Liên kết chưa dùng được.' : 'Email đã được xác thực.'}
+  lead={
+    hasError
+      ? 'Liên kết này có thể đã hết hạn hoặc đã được dùng trước đó. Bạn có thể yêu cầu một liên kết mới.'
+      : 'Cảm ơn bạn đã xác nhận. Cuốn sổ của bạn đã sẵn sàng để mở lại.'
+  }
+>
+  {
+    hasError ? (
+      <>
+        <p class="auth-alert" data-visible="true" role="alert">
+          Liên kết xác thực đã hết hạn hoặc không hợp lệ. Bạn yêu cầu một liên kết mới để tiếp tục nhé.
+        </p>
+        <p class="auth-footer">
+          <a href={withBase('/tai-khoan/bao-mat')}>Yêu cầu liên kết xác thực mới</a>
+        </p>
+      </>
+    ) : (
+      <>
+        <div class="auth-success" data-visible="true" role="status">
+          <strong>Email của bạn đã được xác thực.</strong> Từ giờ bạn có thể đăng nhập và tiếp tục những
+          ghi chép đã lưu.
+        </div>
+        <p class="auth-footer">
+          <a href={withBase('/tai-khoan')}>Vào tài khoản của bạn</a>
+        </p>
+      </>
+    )
+  }
+</AuthLayout>

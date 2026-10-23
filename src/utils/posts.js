@@ -22,8 +22,8 @@ export function getCategories(posts = []) {
   return [...categories.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, 'vi'));
 }
 
-export function getRelatedPosts(posts = [], currentFile, category, limit = 2) {
-  const sorted = sortPosts(posts.filter((post) => post.file !== currentFile));
+export function getRelatedPosts(posts = [], current, category, limit = 2) {
+  const sorted = sortPosts(posts.filter((post) => post.file !== current && post.url !== current));
   if (!category) return sorted.slice(0, limit);
 
   const sameCategory = sorted.filter((post) => post.frontmatter?.category === category);

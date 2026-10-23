@@ -1,0 +1,117 @@
+---
+import AccountShell from '../../layouts/AccountShell.astro';
+import { withBase } from '../../utils/helpers';
+
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect(`${withBase('/dang-nhap')}?next=${encodeURIComponent('/tai-khoan/bao-mat')}`);
+}
+
+const session = Astro.locals.session;
+---
+
+<AccountShell
+  title="Bảo mật"
+  description="Đổi mật khẩu, xác thực email và kiểm tra phiên đăng nhập nét mực."
+  heading="Bảo mật tài khoản."
+  lead="Giữ mật khẩu riêng tư, xác thực email và kiểm tra phiên đăng nhập đang mở."
+  active="security"
+>
+  <section class="account-card">
+    <h2>Đổi mật khẩu</h2>
+    <p>Dùng mật khẩu dài từ 8 ký tự. Sau khi đổi, các phiên đăng nhập khác sẽ được đăng xuất.</p>
+
+    <form class="auth-form" data-security-form="password">
+      <div class="auth-field">
+        <label for="current-password">Mật khẩu hiện tại</label>
+        <input
+          id="current-password"
+          name="currentPassword"
+          type="password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <div class="auth-field">
+        <label for="new-password">Mật khẩu mới</label>
+        <input
+          id="new-password"
+          name="newPassword"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        />
+      </div>
+
+      <div class="auth-field">
+        <label for="confirm-new-password">Nhập lại mật khẩu mới</label>
+        <input
+          id="confirm-new-password"
+          name="confirmPassword"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+        />
+      </div>
+
+      <p class="auth-alert" data-security-alert role="alert" aria-live="polite"></p>
+      <p class="auth-success" data-security-success role="status" aria-live="polite">
+        Mật khẩu đã được cập nhật. Các phiên đăng nhập khác đã được đăng xuất.
+      </p>
+
+      <button class="auth-submit" type="submit">
+        <span data-label>Lưu mật khẩu mới</span>
+      </button>
+    </form>
+  </section>
+
+  <section class="account-card">
+    <h2>Email</h2>
+    <p>
+      {user.email}
+      {user.emailVerified
+        ? ' đã được xác thực.'
+        : ' chưa được xác thực. Xác thực email để bảo vệ tài khoản tốt hơn.'}
+    </p>
+
+    {
+      !user.emailVerified && (
+        <>
+          <p class="auth-alert" data-verify-alert role="alert" aria-live="polite"></p>
+          <p class="auth-success" data-verify-success role="status" aria-live="polite">
+            Đã gửi liên kết xác thực. Bạn kiểm tra hộp thư của {user.email} nhé.
+          </p>
+          <button class="auth-submit" type="button" data-verify-email data-email={user.email}>
+            <span data-label>Gửi liên kết xác thực</span>
+          </button>
+        </>
+      )
+    }
+  </section>
+
+  <section class="account-card">
+    <h2>Phiên đăng nhập hiện tại</h2>
+    <p>Thông tin cơ bản của phiên đang mở trên thiết bị này.</p>
+    <div class="account-list account-list--meta">
+      <div class="account-list__item">
+        <span>Thiết bị</span>
+        <span>{session?.userAgent || 'Không xác định'}</span>
+      </div>
+      <div class="account-list__item">
+        <span>Địa chỉ IP</span>
+        <span>{session?.ipAddress || 'Không xác định'}</span>
+      </div>
+      <div class="account-list__item">
+        <span>Hết hạn</span>
+        <span>{session ? new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium' }).format(session.expiresAt) : 'Không xác định'}</span>
+      </div>
+    </div>
+  </section>
+</AccountShell>
+
+<script>
+  import '../../scripts/account';
+</script>

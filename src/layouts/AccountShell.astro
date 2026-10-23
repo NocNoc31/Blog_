@@ -1,0 +1,86 @@
+---
+import Page from './Page.astro';
+import { settings } from '../data/settings';
+import { withBase } from '../utils/helpers';
+
+export interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  lead: string;
+  active: 'overview' | 'saved' | 'security';
+}
+
+const { title, description, heading, lead, active } = Astro.props;
+const user = Astro.locals.user;
+const welcome = Astro.url.searchParams.get('welcome') === '1';
+const signedIn = Astro.url.searchParams.get('signed-in') === '1';
+const notice = welcome
+  ? `Tạo tài khoản thành công. Chào ${user?.name || 'bạn'}, cuốn sổ của bạn đã sẵn sàng.`
+  : signedIn
+    ? 'Đăng nhập thành công. Chào mừng bạn quay lại.'
+    : '';
+const links = [
+  { key: 'overview', label: 'Tổng quan', href: '/tai-khoan' },
+  { key: 'saved', label: 'Bài đã lưu', href: '/tai-khoan/bai-viet-da-luu' },
+  { key: 'security', label: 'Bảo mật', href: '/tai-khoan/bao-mat' },
+] as const;
+---
+
+<Page seo={{ title: `${title} — ${settings.name}`, description, robots: 'noindex, nofollow' }}>
+  <section class="account-page">
+    <div class="container">
+      <header class="account-head">
+        <div>
+          <h1>{heading}</h1>
+          <p>{lead}</p>
+        </div>
+        <a class="account-chip" href={withBase('/tai-khoan')}>
+          <span class="account-chip__dot" aria-hidden="true"></span>
+          {user?.name || 'Tài khoản'}
+        </a>
+      </header>
+
+      <div class="account-grid">
+        <aside class="account-nav" aria-label="Tài khoản">
+          {links.map((link) => (
+            <a href={withBase(link.href)} aria-current={active === link.key ? 'page' : undefined}>
+              {link.label}
+              <span aria-hidden="true">{active === link.key ? '→' : ''}</span>
+            </a>
+          ))}
+          <button class="account-nav__signout" type="button" data-signout>Đăng xuất</button>
+        </aside>
+
+        <div class="account-panel">
+          {notice && (
+            <p class="account-flash" role="status" aria-live="polite">
+              {notice}
+            </p>
+          )}
+          <slot />
+        </div>
+      </div>
+    </div>
+  </section>
+</Page>
+
+<script>
+  import { authClient } from '../lib/auth-client';
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('welcome') || params.has('signed-in')) {
+    params.delete('welcome');
+    params.delete('signed-in');
+    const query = params.toString();
+    history.replaceState({}, '', `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash}`);
+  }
+
+  document.querySelectorAll('[data-signout]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      button.setAttribute('disabled', 'true');
+      await authClient.signOut();
+      window.location.href = '/';
+    });
+  });
+</script>

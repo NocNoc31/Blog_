@@ -1,4 +1,4 @@
-/** Prefix a site-root path with Astro's base (`/Blog_/`). Leaves external URLs alone. */
+/** Prefix a site-root path with Astro's base. Leaves external URLs alone. */
 export function withBase(path = '/') {
   const base = import.meta.env.BASE_URL || '/';
   if (path == null || path === '') return base;

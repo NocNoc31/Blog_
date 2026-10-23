@@ -1,0 +1,67 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { withBase } from '../utils/helpers';
+
+if (Astro.locals.user) return Astro.redirect('/tai-khoan');
+---
+
+<AuthLayout
+  title="Đăng nhập"
+  description="Đăng nhập vào nét mực để tiếp tục những ghi chép đã lưu."
+  eyebrow="Chào bạn quay lại"
+  heading="Mở lại cuốn sổ."
+  lead="Những ghi chép bạn đã lưu vẫn đang ở đây. Đăng nhập để đọc tiếp, đánh dấu bài mới và giữ mạch ghi chép của mình."
+  note="Một tài khoản nhỏ để giữ bài đã lưu, phần đang đọc và danh sách riêng của bạn trong nét mực."
+>
+  <form class="auth-form" method="post" data-auth-form="login">
+    <div class="auth-field">
+      <label for="login-email">Email</label>
+      <input
+        id="login-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        placeholder="ban@vidu.com"
+        required
+      />
+    </div>
+
+    <div class="auth-field">
+      <label for="login-password">Mật khẩu</label>
+      <input
+        id="login-password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+    </div>
+
+    <div class="auth-row">
+      <label class="auth-check">
+        <input type="checkbox" name="rememberMe" value="true" />
+        Duy trì đăng nhập
+      </label>
+    </div>
+
+    <p class="auth-alert" data-auth-alert role="alert" aria-live="polite"></p>
+
+    <button class="auth-submit" type="submit">
+      <span data-label>Đăng nhập</span>
+    </button>
+  </form>
+
+  <p class="auth-footer">
+    Chưa nhớ ra mật khẩu? <a href={withBase('/quen-mat-khau')}>Đặt lại mật khẩu</a> hoặc{' '}
+    <a href={withBase('/dang-ky')}>tạo tài khoản mới</a>.
+  </p>
+
+  <p class="auth-note">
+    Tài khoản giúp bạn giữ lại những bài đã lưu, để lần sau quay lại không phải tìm từ đầu.
+  </p>
+</AuthLayout>
+
+<script>
+  import '../scripts/auth-forms';
+</script>

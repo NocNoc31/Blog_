@@ -4,29 +4,13 @@ import Container from '../../../components/Container.astro';
 import BlogPostsList from '../../../components/BlogPostsList.astro';
 import { settings } from '../../../data/settings';
 import { slugify, withBase } from '../../../utils/helpers';
-import { sortPosts } from '../../../utils/posts';
+import { allPosts } from '../../../utils/content.js';
 
-export async function getStaticPaths() {
-  const posts = sortPosts(await Astro.glob('../*.{md,mdx}'));
-  const categories = new Map();
+const slug = Astro.params.slug;
+const posts = allPosts.filter((post) => post.frontmatter.category && slugify(post.frontmatter.category) === slug);
+const category = posts[0]?.frontmatter.category;
 
-  for (const post of posts) {
-    const name = post.frontmatter.category;
-    if (!name) continue;
-
-    const slug = slugify(name);
-    const entry = categories.get(slug) ?? { name, slug, posts: [] };
-    entry.posts.push(post);
-    categories.set(slug, entry);
-  }
-
-  return [...categories.values()].map(({ name, slug, posts }) => ({
-    params: { slug },
-    props: { category: name, posts },
-  }));
-}
-
-const { category, posts } = Astro.props;
+if (!category) return Astro.redirect(withBase('/#chu-de'));
 
 const seo = {
   title: `${category} — ${settings.name}`,

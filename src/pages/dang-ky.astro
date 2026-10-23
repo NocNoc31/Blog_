@@ -1,0 +1,88 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import { withBase } from '../utils/helpers';
+
+if (Astro.locals.user) return Astro.redirect('/tai-khoan');
+---
+
+<AuthLayout
+  title="Tạo tài khoản"
+  description="Tạo tài khoản nét mực để lưu bài viết và quay lại những ghi chép đáng nhớ."
+  eyebrow="Bắt đầu ghi chép"
+  heading="Một chỗ cho những điều đáng nhớ."
+  lead="Tạo một tài khoản nhỏ để giữ lại bài đã lưu, phần đang đọc và những ghi chép bạn muốn quay lại."
+  note="Không cần nhiều. Chỉ một email và một mật khẩu để cuốn sổ của bạn có chỗ ở riêng."
+>
+  <form class="auth-form" method="post" data-auth-form="signup">
+    <div class="auth-field">
+      <label for="signup-name">Tên hiển thị</label>
+      <input
+        id="signup-name"
+        name="name"
+        type="text"
+        autocomplete="name"
+        minlength="2"
+        placeholder="Bạn muốn được gọi là gì?"
+        required
+      />
+    </div>
+
+    <div class="auth-field">
+      <label for="signup-email">Email</label>
+      <input
+        id="signup-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        placeholder="ban@vidu.com"
+        required
+      />
+    </div>
+
+    <div class="auth-field">
+      <label for="signup-password">Mật khẩu</label>
+      <input
+        id="signup-password"
+        name="password"
+        type="password"
+        autocomplete="new-password"
+        minlength="8"
+        aria-describedby="signup-password-hint"
+        required
+      />
+      <p class="auth-field__hint" id="signup-password-hint">Mật khẩu cần ít nhất 8 ký tự.</p>
+    </div>
+
+    <div class="auth-field">
+      <label for="signup-confirm-password">Nhập lại mật khẩu</label>
+      <input
+        id="signup-confirm-password"
+        name="confirmPassword"
+        type="password"
+        autocomplete="new-password"
+        minlength="8"
+        required
+      />
+    </div>
+
+    <p class="auth-alert" data-auth-alert role="alert" aria-live="polite"></p>
+
+    <button class="auth-submit" type="submit">
+      <span data-label>Tạo tài khoản</span>
+    </button>
+  </form>
+
+  <p class="auth-footer">
+    Đã có tài khoản? <a href={withBase('/dang-nhap')}>Đăng nhập</a>.
+  </p>
+
+  <p class="auth-note">
+    Mật khẩu dài từ 8 ký tự trở lên. Mình chỉ gửi email khi cần xác thực hoặc đặt lại mật khẩu, không gửi
+    thư quảng cáo.
+  </p>
+</AuthLayout>
+
+<script>
+  import '../scripts/auth-forms';
+</script>

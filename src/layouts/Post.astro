@@ -8,7 +8,12 @@ import ArticleToc from '../components/ArticleToc.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
 import { settings } from '../data/settings';
 import { formatDate, getReadingTime, slugify, withBase } from '../utils/helpers';
-import { getRelatedPosts, sortPosts } from '../utils/posts';
+import { getRelatedPosts } from '../utils/posts';
+import { allPosts } from '../utils/content.js';
+import { getInitials } from '../lib/initials';
+import { and, eq } from 'drizzle-orm';
+import { db } from '../lib/db';
+import { savedPosts } from '../lib/db/schema';
 
 const { frontmatter, headings = [] } = Astro.props;
 const rawContent = typeof Astro.props.rawContent === 'function' ? Astro.props.rawContent() : '';
@@ -17,20 +22,22 @@ const secondaryHeadings = headings.filter((heading) => heading.depth === 3);
 const toc = headings.some((heading) => heading.depth === 2)
   ? headings.filter((heading) => heading.depth === 2)
   : secondaryHeadings;
-const posts = sortPosts(await Astro.glob('../pages/blog/*.{md,mdx}'));
-const related = getRelatedPosts(posts, Astro.props.file, frontmatter.category, 2);
+const related = getRelatedPosts(allPosts, Astro.props.file ?? Astro.url.pathname, frontmatter.category, 2);
 const categoryUrl = frontmatter.category
   ? withBase(`/blog/category/${slugify(frontmatter.category)}`)
   : null;
 const shareUrl = new URL(Astro.url.pathname, settings.site).href;
 const shareText = encodeURIComponent(frontmatter.title);
-const initials = settings.author
-  .split(' ')
-  .filter(Boolean)
-  .map((part) => part[0])
-  .slice(-2)
-  .join('')
-  .toUpperCase();
+const postPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const user = Astro.locals.user;
+const isSaved = user
+  ? (await db
+      .select({ id: savedPosts.id })
+      .from(savedPosts)
+      .where(and(eq(savedPosts.userId, user.id), eq(savedPosts.postSlug, postPath)))
+      .limit(1)).length > 0
+  : false;
+const initials = getInitials(settings.author);
 
 const seo = {
   title: `${frontmatter.title} — ${settings.name}`,
@@ -72,7 +79,22 @@ const seo = {
                 )
               }
               <span class="meta-spacer"></span>
-              <button class="save-btn" type="button" data-save-post aria-pressed="false">Lưu bài</button>
+              {user ? (
+                <button
+                  class="save-btn"
+                  type="button"
+                  data-save-post
+                  data-post-title={frontmatter.title}
+                  data-post-url={postPath}
+                  aria-pressed={isSaved}
+                >
+                  {isSaved ? 'Đã lưu' : 'Lưu bài'}
+                </button>
+              ) : (
+                <a class="save-btn" href={withBase(`/dang-nhap?next=${encodeURIComponent(postPath)}`)}>
+                  Lưu bài
+                </a>
+              )}
             </div>
           </header>
 
@@ -155,11 +177,11 @@ const seo = {
 </Layout>
 
 <script>
-  const progressBars = [...document.querySelectorAll('[data-reading-progress]')];
-  const tocLinks = [...document.querySelectorAll('[data-toc-link]')];
+  const progressBars = [...document.querySelectorAll<HTMLElement>('[data-reading-progress]')];
+  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
   const sections = tocLinks
     .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
-    .filter(Boolean);
+    .filter((section): section is HTMLElement => section !== null);
 
   const updateProgress = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -172,7 +194,7 @@ const seo = {
   const updateToc = () => {
     if (!sections.length) return;
     const marker = 180;
-    let active = sections[0];
+    let active: HTMLElement = sections[0];
 
     for (const section of sections) {
       if (section.getBoundingClientRect().top <= marker) active = section;
@@ -198,36 +220,46 @@ const seo = {
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
 
-  const saveBtn = document.querySelector('[data-save-post]');
+  const saveBtn = document.querySelector<HTMLButtonElement>('[data-save-post]');
   if (saveBtn) {
-    const storageKey = 'net-muc:saved-posts';
-    const postPath = window.location.pathname;
-    let saved = [];
-
-    try {
-      const parsed = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      saved = Array.isArray(parsed) ? parsed : [];
-    } catch {
-      saved = [];
-    }
-
-    const syncSaveButton = () => {
-      const isSaved = saved.includes(postPath);
+    const syncSaveButton = (isSaved: boolean) => {
       saveBtn.setAttribute('aria-pressed', String(isSaved));
       saveBtn.textContent = isSaved ? 'Đã lưu' : 'Lưu bài';
     };
 
-    syncSaveButton();
-    saveBtn.addEventListener('click', () => {
-      saved = saved.includes(postPath)
-        ? saved.filter((path) => path !== postPath)
-        : [...saved, postPath];
+    saveBtn.addEventListener('click', async () => {
+      if (saveBtn.disabled) return;
+      const original = saveBtn.textContent;
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Đang lưu…';
+
       try {
-        localStorage.setItem(storageKey, JSON.stringify(saved));
+        const response = await fetch('/api/saved-posts', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            postSlug: saveBtn.dataset.postUrl,
+            postTitle: saveBtn.dataset.postTitle,
+            postUrl: saveBtn.dataset.postUrl,
+          }),
+        });
+
+        if (response.status === 401) {
+          window.location.assign(`/dang-nhap?next=${encodeURIComponent(window.location.pathname)}`);
+          return;
+        }
+
+        if (!response.ok) throw new Error('save failed');
+        const result = await response.json();
+        syncSaveButton(Boolean(result.saved));
       } catch {
-        return;
+        saveBtn.textContent = 'Không lưu được';
+        window.setTimeout(() => {
+          saveBtn.textContent = original;
+        }, 1600);
+      } finally {
+        saveBtn.disabled = false;
       }
-      syncSaveButton();
     });
   }
 

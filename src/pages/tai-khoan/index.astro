@@ -1,0 +1,87 @@
+---
+import { count, eq } from 'drizzle-orm';
+import AccountShell from '../../layouts/AccountShell.astro';
+import { db } from '../../lib/db';
+import { savedPosts } from '../../lib/db/schema';
+import { formatDate, withBase } from '../../utils/helpers';
+import { getInitials } from '../../lib/initials';
+
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect(`${withBase('/dang-nhap')}?next=${encodeURIComponent('/tai-khoan')}`);
+}
+
+const [savedCount] = await db
+  .select({ value: count() })
+  .from(savedPosts)
+  .where(eq(savedPosts.userId, user.id));
+
+const initials = getInitials(user.name);
+---
+
+<AccountShell
+  title="Tài khoản"
+  description="Quản lý tài khoản nét mực, bài đã lưu và bảo mật."
+  heading="Cuốn sổ của bạn."
+  lead="Một chỗ gọn gàng để xem lại thông tin tài khoản, những bài đã lưu và cách bảo vệ quyền truy cập."
+  active="overview"
+>
+  <section class="account-card">
+    <div class="account-profile">
+      <span class="account-avatar" aria-hidden="true">{initials}</span>
+      <div>
+        <p class="account-profile__name">{user.name}</p>
+        <p class="account-profile__email">{user.email}</p>
+      </div>
+    </div>
+
+    <div class="account-stats">
+      <div class="account-stat">
+        <b>{savedCount?.value ?? 0}</b>
+        <span>Bài đã lưu</span>
+      </div>
+      <div class="account-stat">
+        <b>{user.emailVerified ? 'Đã xác thực' : 'Chưa xác thực'}</b>
+        <span>Email</span>
+      </div>
+      <div class="account-stat">
+        <b>{formatDate(user.createdAt)}</b>
+        <span>Ngày tham gia</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="account-card">
+    <h2>Tiếp tục từ đây</h2>
+    <p>Những lối tắt cho việc đọc và giữ bài.</p>
+    <div class="account-list">
+      <div class="account-list__item">
+        <a href={withBase('/#bai-viet')}>Đọc bài mới</a>
+        <span>Trang chủ</span>
+      </div>
+      <div class="account-list__item">
+        <a href={withBase('/tai-khoan/bai-viet-da-luu')}>Xem bài đã lưu</a>
+        <span>{savedCount?.value ?? 0} bài</span>
+      </div>
+      <div class="account-list__item">
+        <a href={withBase('/tai-khoan/bao-mat')}>Đổi mật khẩu và bảo mật</a>
+        <span>Tài khoản</span>
+      </div>
+    </div>
+  </section>
+
+  {
+    !user.emailVerified && (
+      <section class="account-card">
+        <h2>Xác thực email</h2>
+        <p>
+          Email {user.email} chưa được xác thực. Bạn có thể xác thực ngay để bảo vệ tài khoản và nhận thông
+          báo quan trọng.
+        </p>
+        <p class="auth-footer">
+          <a href={withBase('/tai-khoan/bao-mat')}>Mở trang bảo mật</a>
+        </p>
+      </section>
+    )
+  }
+</AccountShell>

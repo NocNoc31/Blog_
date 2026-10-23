@@ -2,6 +2,9 @@
 import Container from './Container.astro';
 import { settings } from '../data/settings';
 import { withBase } from '../utils/helpers';
+
+const user = Astro.locals.user;
+const displayName = user?.name || 'Tài khoản';
 ---
 
 <script>
@@ -26,6 +29,19 @@ import { withBase } from '../utils/helpers';
       </ul>
 
       <div class="nav-end">
+        <div class="nav-auth">
+          {user ? (
+            <a class="account-chip" href={withBase('/tai-khoan')} aria-label={`Tài khoản của ${user.name}`}>
+              <span class="account-chip__dot" aria-hidden="true"></span>
+              {displayName}
+            </a>
+          ) : (
+            <>
+              <a class="auth-link" href={withBase('/dang-nhap')}>Đăng nhập</a>
+              <a class="auth-cta" href={withBase('/dang-ky')}>Tạo tài khoản</a>
+            </>
+          )}
+        </div>
         <theme-toggle-button></theme-toggle-button>
         <details class="mobile-nav">
           <summary><span aria-hidden="true">☰</span> Menu</summary>
@@ -33,6 +49,19 @@ import { withBase } from '../utils/helpers';
             {settings.nav.map((item) => (
               <a href={withBase(item.href)}>{item.label}</a>
             ))}
+            <span class="mobile-nav__rule" aria-hidden="true"></span>
+            {user ? (
+              <>
+                <a href={withBase('/tai-khoan')}>Tài khoản</a>
+                <a href={withBase('/tai-khoan/bai-viet-da-luu')}>Bài đã lưu</a>
+                <a href={withBase('/tai-khoan/bao-mat')}>Bảo mật</a>
+              </>
+            ) : (
+              <>
+                <a href={withBase('/dang-nhap')}>Đăng nhập</a>
+                <a href={withBase('/dang-ky')}>Tạo tài khoản</a>
+              </>
+            )}
           </nav>
         </details>
       </div>

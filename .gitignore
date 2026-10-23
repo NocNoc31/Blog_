@@ -1,5 +1,9 @@
 # build output
 dist/
+.astro/
+
+# local database data
+.data/
 
 # local design mockups and screenshots
 design/
@@ -16,7 +20,10 @@ pnpm-debug.log*
 
 # environment variables
 .env
+.env.*
+!.env.example
 .env.production
+.vercel/
 
 # macOS-specific files
 .DS_Store
